@@ -1,0 +1,36 @@
+body{
+    background-color: #86B41A;
+}
+.container-fluid{
+    background-image: url("../img/trees.png");
+    background-repeat: repeat-y;
+    height: 100vh;
+    background-position: center
+}
+.banner{
+    background-image: url("../img/banner2.png");
+    height: 200px;
+    background-repeat: repeat-x;
+    background-size: contain;
+    background-position: left
+}
+
+.bg-light{
+    background-color: transparent!important
+}
+
+h1{
+    font-size: 42pt;
+    font-family: 'Luckiest Guy', cursive;
+    color: white
+}
+
+h2{
+    font-size: 42pt;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+h3{
+    font-size: 31pt;
+    font-family: 'Roboto Condensed', sans-serif;
+}
