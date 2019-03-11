@@ -4,7 +4,11 @@
   "description": "An app for pets",
   "main": "server.js",
   "dependencies": {
+<<<<<<< HEAD
     "express-handlebars": "^3.0.2",
+=======
+    "express": "^4.16.4",
+>>>>>>> 605008a5fdecbec81f3e027f0e77c355645a0ad7
     "mysql": "^2.16.0",
     "mysql2": "^1.6.5",
     "sequelize": "^4.43.0"
