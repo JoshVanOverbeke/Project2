@@ -3,7 +3,7 @@ var db = require("../models");
 module.exports = function(app) {
     app.get("/api/pets", function(req, res){
         db.Pets.findAll({
-            include: [{model: db.Owner}]
+            include: [{model: db.Users}]
         })
         .then (function (dbPets){
             res.json(dbPets);
@@ -18,6 +18,7 @@ module.exports = function(app) {
     });
 
     app.put("/api/pets/:id", function(req, res){
+        
         db.Pets.update(
         req.body,
         {
