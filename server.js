@@ -22,6 +22,15 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Syncing our sequelize models and then starting our express app
+=======
+// Routes
+// =============================================================
+require("./routes/html-routes.js")(app);
+require("./routes/pets-api-routes.js")(app);
+require("./routes/owner-api-routes.js")(app);
+
+// Syncing our sequelize models and then starting our Express app
+// =============================================================
 db.sequelize.sync({ force: true }).then(function() {
   app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);
