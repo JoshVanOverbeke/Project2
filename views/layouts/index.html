@@ -31,7 +31,7 @@
                 </button>
                 <div class="justify-content-end collapse navbar-collapse" id="navbarTogglerDemo01">
                     <div class="pr-4">
-                        <button class="btn btn-danger my-2 my-sm-0 mx-2">Create A Pet</button>
+                        <button class="btn btn-danger my-2 my-sm-0 mx-2" id="create">Create A Pet</button>
                         <button class="btn btn-warning my-2 my-sm-0 mx-2">Log In</button>
                         <button class="btn btn-warning my-2 my-sm-0 mx-2">Sign Up</button>
                     </div>
@@ -41,9 +41,110 @@
     </header>
 
     <div class="container-fluid mt-5">
-
-
+        <div class="cards">
+            <article data-id="1">
+                <img src="../../public/assets/img/gif/spinCat.gif">
+            </article>
+            <article data-id="2">
+                <img src="../../public/assets/img/gif/angryCat.gif">
+            </article>
+            <article data-id="3">
+                <img src="../../public/assets/img/gif/danceCat.gif">
+            </article>
+            <article>
+                <img src="../../public/assets/img/gif/jumpyBunny.gif">
+            </article>
+            <article>
+                <img src="../../public/assets/img/gif/toothPlant.gif">
+            </article>
+            <article>
+                <img src="../../public/assets/img/gif/swordWolf.gif">
+            </article>
+        </div>
     </div>
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"
+        id="petStatus">
+        <div class="modal-dialog modal-dialog-centered .modal-lg" role="document">
+            <div class="modal-content p-2">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalCenterTitle"><b>Bearer</b> | Owener: Jack</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row align-items-center justify-content-around">
+                        <div class="col-md-2 p-0">
+                            <h5 class="align-self-end py-0 my-0 text-right">H.P.</h5>
+                        </div>
+                        <div class="col-md-7 p-0">
+                            <div class="progress" style="height: 30px;">
+                                <div id="hpBar" class="progress-bar bg-danger" role="progressbar" style="width: 33%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 p-0">
+                            <button class="btn btn-danger py-0 action" style="width:70px; height: 30px;">Kill</button>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center justify-content-around my-2">
+                        <div class="col-md-2 p-0">
+                            <h5 class="align-self-end py-0 my-0 text-right">Hungry</h5>
+                        </div>
+                        <div class="col-md-7 p-0">
+                            <div class="progress" style="height: 30px;">
+                                <div id="hungryBar" class="progress-bar progress-bar-striped bg-success"
+                                    role="progressbar" style="width: 80%;"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 p-0">
+                            <button class="btn btn-warning py-0 action" style="width:70px; height: 30px;">Feed</button>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center justify-content-around my-2">
+                        <div class="col-md-2 p-0">
+                            <h5 class="align-self-end py-0 my-0 text-right">Sleepy</h5>
+                        </div>
+                        <div class="col-md-7 p-0">
+                            <div class="progress" style="height: 30px;">
+                                <div id="sleepyBar" class="progress-bar progress-bar-striped bg-success"
+                                    role="progressbar" style="width: 40%;"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 p-0">
+                            <button class="btn btn-warning py-0 action" style="width:70px; height: 30px;">Sleep</button>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center justify-content-around my-2">
+                        <div class="col-md-2 p-0">
+                            <h5 class="align-self-end py-0 my-0 text-right">Happy</h5>
+                        </div>
+                        <div class="col-md-7 p-0">
+                            <div class="progress" style="height: 30px;">
+                                <div id="happyBar" class="progress-bar progress-bar-striped bg-success"
+                                    role="progressbar" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 p-0">
+                            <button class="btn btn-warning py-0 action" style="width:70px; height: 30px;">Play</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <!-- <div class="modal-body">
+        <div class="container-fluid">
+           
+        </div>
+    </div> -->
 </body>
 <script src="https://code.jquery.com/jquery.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"

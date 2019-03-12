@@ -1,32 +1,63 @@
 var db = require("../models");
 
 module.exports = function(app) {
-    app.get("/api/pets", function(req, res){
+    //get all pets
+    app.get("/", function(req, res){
         db.Pets.findAll({
-            include: [{model: db.Owner}]
+            include: [{model: db.User}]
+        })
+        .then (function (dbPets){
+            res.render("index", dbPets)
+        });
+    });
+
+    //get a specific pet info
+    app.get("/api/pet/:id", function(req,res){
+        db.Pets.findOne({
+            include: [{model: db.User}],
+            where:{
+                id: req.params.id
+            }
         })
         .then (function (dbPets){
             res.json(dbPets);
         });
-    });
+    })
 
-    app.post("/api/pets/:id", function(req, res){
+
+    //post a new pet
+    app.post("/api/newpet/", function(req, res){
         db.Pets.create(req.body)
-        .then (function (dbPets){
-            res.json(dbPets);
+        .then (function (result){
+            res.json(result);
         });
     });
 
-    app.put("/api/pets/:id", function(req, res){
+    //post a new user
+    app.post("/api/newuser/", function(req, res){
+        db.User.create(req.body)
+        .then (function (result){
+            res.json(result);
+        });
+    });
+
+    //change specific pet status
+    app.put("/api/pet/:id", function(req, res){
+        //if or switch to identify the action
+            // req.body data structure
+            // {
+            //     action: action (Kill, Feed, Sleep, Play(all first letter uppercase))
+            // }
         db.Pets.update(
+            // update specific info according to the action above
         req.body,
         {
             where: {
                 id: req.body.id
             }
         })
-        .then (function (dbPets){
-            res.json(dbPets);
+        .then (function (result){
+            res.json(result);
         });
     });
 };
