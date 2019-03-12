@@ -32,33 +32,6 @@ module.exports = function(app) {
             res.json(result);
         });
     });
-
-    //post a new user
-    app.post("/api/newuser/", function(req, res){
-        db.User.create(req.body)
-        .then (function (result){
-            res.json(result);
-        });
-    });
-
-    //change specific pet status
-    app.put("/api/pet/:id", function(req, res){
-        //if or switch to identify the action
-        // if ()
-            // req.body data structure
-            // {
-            //     action: action (Kill, Feed, Sleep, Play(all first letter uppercase))
-            // }
-        db.Pet.update(
-            // update specific info according to the action above
-        req.body,
-        {
-            where: {
-                id: req.body.id
-            }
-        })
-        .then (function (result){
-            res.json(result);
-        });
+  
     });
 };
