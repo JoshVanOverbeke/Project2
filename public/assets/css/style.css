@@ -35,6 +35,11 @@ h3{
     font-family: 'Roboto Condensed', sans-serif;
 }
 
+h6{
+    font-size: 20pt;
+    font-family: 'Just Me Again Down Here', cursive;
+}
+
 .cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -50,4 +55,25 @@ article {
 
 img{
     width: 100%
+}
+
+.speech-bubble {
+	position: relative;
+	background: #ebebeb;
+	border-radius: .4em;
+}
+
+.speech-bubble:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 0.688em solid transparent;
+	border-right-color: #ebebeb;
+	border-left: 0;
+	border-bottom: 0;
+	margin-top: -0.344em;
+	margin-left: -0.687em;
 }
