@@ -46,9 +46,10 @@ $(document).ready(function () {
             data: "requestBody",
           }).then(function(result){
             console.log("changes made!");
-            //uodate the info
+            //update the info
             showPetInfo(id);
           })
+
     })
 
 

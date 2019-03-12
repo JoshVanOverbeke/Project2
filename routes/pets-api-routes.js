@@ -2,15 +2,6 @@ var db = require("../models");
 
 module.exports = function(app) {
     //get all pets
-    app.get("/", function(req, res){
-        db.Pet.findAll({
-            include: [{model: db.User}]
-        })
-        .then (function (dbPets){
-            res.render("index", dbPets)
-        });
-    });
-
     //get a specific pet info
     app.get("/api/pet/:id", function(req,res){
         db.Pet.findOne({
@@ -22,7 +13,7 @@ module.exports = function(app) {
         .then (function (dbPets){
             res.json(dbPets);
         });
-    })
+    });
 
 
     //post a new pet
@@ -42,23 +33,22 @@ module.exports = function(app) {
     });
 
     //change specific pet status
-    app.put("/api/pet/:id", function(req, res){
-        //if or switch to identify the action
-        // if ()
-            // req.body data structure
-            // {
-            //     action: action (Kill, Feed, Sleep, Play(all first letter uppercase))
-            // }
-        db.Pet.update(
-            // update specific info according to the action above
-        req.body,
-        {
-            where: {
-                id: req.body.id
-            }
-        })
-        .then (function (result){
-            res.json(result);
-        });
-    });
+    // app.put("/api/pet/:id", function(req, res){
+    //     //if or switch to identify the action
+    //     //     req.body data structure
+    //     //     {
+    //     //         action: action (Kill, Feed, Sleep, Play(all first letter uppercase))
+    //     //     }
+    //     // db.Pet.update(
+    //         // update specific info according to the action above
+    //     req.body,
+    //     {
+    //         where: {
+    //             id: req.body.id
+    //         }
+    //     })
+    //     .then (function (result){
+    //         res.json(result);
+    //     });
+    // });
 };
