@@ -33,5 +33,95 @@ module.exports = function(app) {
         });
     });
   
+    // update the columns depending on what was sent
+    app.put("/api/pets/:id", function(req, res){
+        // if the hp and alive is sent then update that
+        if (req.body.hp && req.body.alive){
+            db.Pets.update({
+                hp: req.body.hp,
+                alive: req.body.alive
+            },
+                {
+                    where: {
+                        id: req.body.id
+                    }
+                })
+                .then (function (dbPets){
+                    res.json(dbPets);
+                });
+        }
+
+        switch (action){
+        // if Feed is sent then update hungry and lastFed to the current time
+        case Feed:
+        
+            db.Pets.update({
+                hungry: db.Sequelize.literal('hungry + 1'),
+                lastFed: db.Sequelize.NOW
+            },
+                {
+                    where: {
+                        id: req.body.id
+                    }
+                })
+                .then (function (dbPets){
+                    res.json(dbPets);
+                });
+            break;
+        
+        // if Play is sent then update happy and lastPlayed to the current time
+        case Play: 
+        
+            db.Pets.update({
+                happy: db.Sequelize.literal('happy + 1'),
+                lastPlayed: db.Sequelize.NOW
+            },
+                {
+                    where: {
+                        id: req.body.id
+                    }
+                })
+                .then (function (dbPets){
+                    res.json(dbPets);
+                }); 
+            break;  
+        
+        // if Sleep is sent then update sleepy and lastSlept to the current time
+        case Sleep: 
+
+            db.Pets.update({
+                sleepy: db.Sequelize.literal('sleepy + 1'),
+                lastSlept: db.Sequelize.NOW
+            },
+                {
+                    where: {
+                        id: req.body.id
+                    }
+                })
+                .then (function (dbPets){
+                    res.json(dbPets);
+                });  
+            break; 
+       
+        // if Kill is sent then update all status to 0
+        case Kill: 
+        
+            db.Pets.update({
+                alive: 0,
+                sleepy: 0,
+                hungry: 0,
+                happy: 0
+            },
+                {
+                    where: {
+                        id: req.body.id
+                    }
+                })
+                .then (function (dbPets){
+                    res.json(dbPets);
+                });
+            break;   
+    }
+    
     });
 };
