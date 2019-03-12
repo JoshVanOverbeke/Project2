@@ -1,20 +1,43 @@
 var db = require("../models");
 
 module.exports = function(app) {
-// gets all the the pets information
-    app.get("/api/pets", function(req, res){
+    //get all pets
+    app.get("/", function(req, res){
         db.Pets.findAll({
-            include: [{model: db.Owner}]
+            include: [{model: db.User}]
+        })
+        .then (function (dbPets){
+            res.render("index", dbPets)
+        });
+    });
+
+    //get a specific pet info
+    app.get("/api/pet/:id", function(req,res){
+        db.Pets.findOne({
+            include: [{model: db.User}],
+            where:{
+                id: req.params.id
+            }
         })
         .then (function (dbPets){
             res.json(dbPets);
         });
-    });
-// creating a pet and adding to the database
-    app.post("/api/pets/", function(req, res){
+    })
+
+
+    //post a new pet
+    app.post("/api/newpet/", function(req, res){
         db.Pets.create(req.body)
-        .then (function (dbPets){
-            res.json(dbPets);
+        .then (function (result){
+            res.json(result);
+        });
+    });
+
+    //post a new user
+    app.post("/api/newuser/", function(req, res){
+        db.User.create(req.body)
+        .then (function (result){
+            res.json(result);
         });
     });
 // update the columns depending on what was sent
