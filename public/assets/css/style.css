@@ -47,7 +47,16 @@ h6{
     max-width: 1040px;
     margin: 0 auto 30px;
     margin-top: 20px;
-} 
+}
+
+.cards-createNewPet{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 160px));
+    grid-gap: 15px;
+    max-width: 100%;
+    margin: 0 auto 20px;
+    margin-top: 10px;
+}
 
 article {
     position: relative;
@@ -56,6 +65,18 @@ article {
 img{
     width: 100%
 }
+
+.selectPetBox{
+    display: grid;
+    border: 3px solid black;
+    border-radius: 27px;
+    width: 100%
+}
+
+.selectedPetBox{
+    border: 5px solid #F5A623
+}
+
 
 .speech-bubble {
 	position: relative;
