@@ -5,6 +5,7 @@
 // *** Dependencies
 // =============================================================
 var express = require("express");
+var exphbs = require("express-handlebars");
 
 // Sets up the Express App
 // =============================================================
@@ -21,10 +22,18 @@ app.use(express.json());
 // Static directory
 app.use(express.static("public"));
 
+
+//For express and handlebars to talk to each others
+// Set Handlebars as the default templating engine.
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+// all the handlebars are in the ‘view’ folder, the following path will look for handlerbar in this folder
+app.set("view engine", "handlebars");
+
+
 // Routes
 // =============================================================
-require("./routes/html-routes.js")(app);
-require("./routes/users-api-routes.js/index.js")(app);
+// require("./routes/html-routes.js")(app);
+require("./routes/users-api-routes.js")(app);
 require("./routes/pets-api-routes.js")(app);
 
 // Syncing our sequelize models and then starting our Express app
