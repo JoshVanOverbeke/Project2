@@ -101,7 +101,7 @@ const showPetInfo = function (id) {
         console.log("sleepy: " + sleepy)
         console.log("happy: " + happy)
         // change the texts and progress bars
-        $(".modal-title").html("<b>" + data.name + "</b> | Owener: " + data.User.name)
+        $(".modal-title").html("<b>" + data.name + "</b> | Owner: " + data.User.name)
         $("#hpBar").attr("style", "width:" + hp + "%")
         $("#hungryBar").attr("style", "width:" + hungry + "%")
         $("#sleepyBar").attr("style", "width:" + sleepy + "%")
