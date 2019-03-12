@@ -1,4 +1,3 @@
-var Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
   var Pet = sequelize.define("Pet", {
     name: {
@@ -31,16 +30,16 @@ module.exports = function (sequelize, DataTypes) {
       defaultValue: 5,
     },
     lastFed: {
-      type: Sequelize.DATE,
-      defaultValue: Sequelize.NOW,
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
     lastSlept: {
-      type: Sequelize.DATE,
-      defaultValue: Sequelize.NOW,
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
     lastPlayed: {
-      type: Sequelize.DATE,
-      defaultValue: Sequelize.NOW,
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     }
 
 
