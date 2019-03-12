@@ -8,7 +8,7 @@ module.exports = function(app) {
         });
     });
     app.post("/api/users/:id", function(req, res){
-        db.Users.create(req.body)
+        db.User.create(req.body)
         .then (function (dbUsers){
             res.json(dbUsers);
         });
