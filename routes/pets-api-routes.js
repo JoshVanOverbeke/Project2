@@ -33,13 +33,6 @@ module.exports = function(app) {
         });
     });
 
-    //post a new user
-    app.post("/api/newuser/", function(req, res){
-        db.User.create(req.body)
-        .then (function (result){
-            res.json(result);
-        });
-    });
 // update the columns depending on what was sent
     app.put("/api/pets/:id", function(req, res){
         // if the hp and alive is sent then update that
@@ -57,11 +50,14 @@ module.exports = function(app) {
                     res.json(dbPets);
                 });
         }
-        // if hungry is sent then update hungry and lastFed to the current time
-        else if (req.body.hungry){
+        // if Feed is sent then update hungry and lastFed to the current time
+        var action = req.body.action;
+        switch (action) {
+        case Feed:
+        
             db.Pets.update({
-                hungry: req.body.hungry,
-                lastFed: Sequelize.NOW
+                hungry: db.Sequelize.literal('hungry + 1'),
+                lastFed: db.Sequelize.NOW
             },
                 {
                     where: {
@@ -71,11 +67,11 @@ module.exports = function(app) {
                 .then (function (dbPets){
                     res.json(dbPets);
                 });
-        }
-        // if happy is sent then update happy and lastPlayed to the current time
-        else if (req.body.happy){
+        
+        // if Play is sent then update happy and lastPlayed to the current time
+        case Play:
             db.Pets.update({
-                happy: req.body.happy,
+                happy: db.Sequelize.literal('happy + 1'),
                 lastPlayed: Sequelize.NOW
             },
                 {
@@ -86,12 +82,28 @@ module.exports = function(app) {
                 .then (function (dbPets){
                     res.json(dbPets);
                 });   
-        }
-        // if sleepy is sent the update sleepy and lastSlept to the current time
-        else if (req.body.happy){
+        
+        // if Sleep is sent the update sleepy and lastSlept to the current time
+        case Sleep:
             db.Pets.update({
-                sleepy: req.body.sleepy,
+                sleepy: db.Sequelize.literal('sleepy + 1'),
                 lastSlept: Sequelize.NOW
+            },
+                {
+                    where: {
+                        id: req.body.id
+                    }
+                })
+                .then (function (dbPets){
+                    res.json(dbPets);
+                });
+        // if Kill is sent then kill the pet by setting all to 0
+        case Kill:
+            db.Pets.update({
+                alive: 0,
+                hungry: 0,
+                happy: 0,
+                sleepy: 0
             },
                 {
                     where: {
