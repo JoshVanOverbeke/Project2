@@ -3,7 +3,7 @@ var db = require("../models");
 module.exports = function(app) {
     //get all pets
     app.get("/", function(req, res){
-        db.Pets.findAll({
+        db.Pet.findAll({
             include: [{model: db.User}]
         })
         .then (function (dbPets){
@@ -13,7 +13,7 @@ module.exports = function(app) {
 
     //get a specific pet info
     app.get("/api/pet/:id", function(req,res){
-        db.Pets.findOne({
+        db.Pet.findOne({
             include: [{model: db.User}],
             where:{
                 id: req.params.id
@@ -27,7 +27,7 @@ module.exports = function(app) {
 
     //post a new pet
     app.post("/api/newpet/", function(req, res){
-        db.Pets.create(req.body)
+        db.Pet.create(req.body)
         .then (function (result){
             res.json(result);
         });
@@ -44,11 +44,12 @@ module.exports = function(app) {
     //change specific pet status
     app.put("/api/pet/:id", function(req, res){
         //if or switch to identify the action
+        // if ()
             // req.body data structure
             // {
             //     action: action (Kill, Feed, Sleep, Play(all first letter uppercase))
             // }
-        db.Pets.update(
+        db.Pet.update(
             // update specific info according to the action above
         req.body,
         {

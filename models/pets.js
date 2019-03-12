@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  var Pets = sequelize.define("Pets", {
+  var Pet = sequelize.define("Pet", {
     name: {
       type: DataTypes.STRING,
       validate: {
@@ -31,27 +31,27 @@ module.exports = function (sequelize, DataTypes) {
     },
     lastFed: {
       type: DataTypes.DATE,
-      defaultValue: sequelize.NOW,
+      defaultValue: DataTypes.NOW,
     },
     lastSlept: {
       type: DataTypes.DATE,
-      defaultValue: sequelize.NOW,
+      defaultValue: DataTypes.NOW,
     },
     lastPlayed: {
       type: DataTypes.DATE,
-      defaultValue: sequelize.NOW,
+      defaultValue: DataTypes.NOW,
     }
 
 
   });
 
-  Pets.associate = function (models) {
-    models.Pets.belongsTo(models.User, {
+  Pet.associate = function (models) {
+    models.Pet.belongsTo(models.User, {
       onDelete: "CASCADE",
       foreignKey: {
         allowNull: false
       }
     });
   };
-  return Pets;
+  return Pet;
 };
