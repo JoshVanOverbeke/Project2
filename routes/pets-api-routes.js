@@ -1,4 +1,5 @@
 var db = require("../models");
+var moment = require("moment");
 
 module.exports = function(app) {
     //get all pets
@@ -57,7 +58,7 @@ module.exports = function(app) {
         
             db.Pets.update({
                 hungry: db.Sequelize.literal('hungry + 1'),
-                lastFed: db.Sequelize.NOW
+                lastFed: moment()
             },
                 {
                     where: {
@@ -74,7 +75,7 @@ module.exports = function(app) {
         
             db.Pets.update({
                 happy: db.Sequelize.literal('happy + 1'),
-                lastPlayed: db.Sequelize.NOW
+                lastPlayed: moment()
             },
                 {
                     where: {
@@ -91,7 +92,7 @@ module.exports = function(app) {
 
             db.Pets.update({
                 sleepy: db.Sequelize.literal('sleepy + 1'),
-                lastSlept: db.Sequelize.NOW
+                lastSlept: moment()
             },
                 {
                     where: {
