@@ -1,3 +1,5 @@
+var selectedPetSrc = ""
+
 var messages = {
     goodStatus: [
         "Anything fun to do today? :) ",
@@ -39,14 +41,63 @@ $(document).ready(function () {
     //     password: password,
     // }
 
-    //clickhandlers for create pet model
-    //POST: new pet
-    //data structure
-    // {
-    //     name: name,
-    //     img: img src,
-    //     UserId: log in user id
-    // }
+    //clickhandler for showing the create pet modal
+    $("#createPet").on("click",function(e){
+        e.preventDefault()
+        // run the function that displays pet options
+        creatNewPetList()
+        // show the modal
+        $('#createPetModal').modal('show')
+
+
+
+    })
+
+    //clickhandler for select a pet
+    $("#createPetModal").on("click",".selectPetBox",function(e){
+        e.preventDefault()
+        console.log("click!")
+        // change the border color and thickness of the selected box
+        $(".selectPetBox").removeClass("selectedPetBox")
+        $(this).addClass("selectedPetBox");
+        selectedPetSrc = $(this).data("img");
+        console.log(selectedPetSrc)
+        // get the name of the pet
+    })
+
+    //clickhandler for submit/create a pet
+    $("#createNewPetBtn").on("click", function(e){
+        e.preventDefault()
+        let name = $("#newPetName").val()
+        let img = selectedPetSrc
+        let requestBody = {
+            name: name,
+            img: img,
+            //here is a dummy data, change this when we figure out the authentication stuff
+            UserId: "1"
+        }
+        // hit the POST request path
+        $.ajax({
+            url: "/api/newpet",
+            type: 'POST',
+            data: requestBody,
+        }).then(function(result){
+            console.log("New Pet has been created")
+            location.reload()
+        })
+    })
+    
+
+    // a function that displays pet options
+    const creatNewPetList = function(){
+        // run the src of gifs in a for loop
+        for(let i = 0; i<19; i++){
+            let src = "/assets/img/gif/pet" + i + ".gif"
+            let articleDiv = '<div class="selectPetBox p-2" style="align-items: center" data-img="'+ src +'"><div style="align-self: center; justify-self: center;"><img src="' + src +'"></div></div>'
+            // append to div cards-createNewPet
+            $(".cards-createNewPet").append(articleDiv)
+        }
+    }
 
     //clickhandlers for pets
     $("article").on("click", function (e) {
@@ -157,3 +208,5 @@ const messageGenerator = function(hp, hungry, sleepy, happy){
         }
     return message
 }
+
+
