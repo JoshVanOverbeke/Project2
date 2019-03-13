@@ -102,3 +102,12 @@ img{
 button{
     font-family: 'Roboto Condensed', sans-serif;
 }
+
+#aliveInfo, #resurrectInfo{
+    display: none
+}
+
+#thunder{
+    position: absolute;
+    top: -100px
+}

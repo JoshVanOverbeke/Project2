@@ -26,7 +26,8 @@ var messages = {
     hp1: "I'm dying. Send me to the vet ASAP... ",
     play: "Playing ╭(●｀∀´●)╯╰(●’◡’●)╮ ... ",
     sleep: "(-.-)..zzZZ ",
-    feed: "Yum, yum, yum....ԅ(¯﹃¯ԅ) "
+    feed: "Yum, yum, yum....ԅ(¯﹃¯ԅ) ",
+    die: "You didn't love me, so I am dead. QAQ"
 }
 
 
@@ -122,7 +123,7 @@ $(document).ready(function () {
         showPetInfo(id)
     })
 
-    
+
     // function to show/update info of specific pet
     const showPetInfo = function (id) {
         // GET: specific pet info
@@ -139,30 +140,35 @@ $(document).ready(function () {
             $(".modal-title").html("<b>" + name + "</b> | Owner: " + username)
             //if it is alive
             //show and update the info
-            if(alive){
-
+            if (alive) {
+                $("#aliveInfo").css("display", "block")
                 //change the progress bars
                 $("#hpBar").attr("style", "width:" + hp + "%")
                 $("#hungryBar").attr("style", "width:" + hungry + "%")
                 $("#sleepyBar").attr("style", "width:" + sleepy + "%")
                 $("#happyBar").attr("style", "width:" + happy + "%")
-                
+
                 //change the action btns' data-id
                 $("#killBtn").attr("data-id", id)
                 $("#feedBtn").attr("data-id", id)
                 $("#sleepBtn").attr("data-id", id)
                 $("#playBtn").attr("data-id", id)
-                
-                // manage the message:
-                let message = messageGenerator(parseInt(data.hp), parseInt(data.hungry), parseInt(data.sleepy), parseInt(data.happy))
-                console.log("The message is:")
-                console.log(message)
-                $("#message").html(message)
-                // show the modal
-                $('#petStatus').modal('show')
+
+            } else {
+                //if it is not alive
+                $("#resurrectInfo").css("display", "block")
+                //change the data id of the resurrect button
+                console.log("The resurrect btn id is " + id)
+                $("#resurrectBtn").attr("data-id", id)
             }
-            //if it is not alive
-            //show the resurrect button
+
+            // manage the message:
+            let message = messageGenerator(alive, parseInt(data.hp), parseInt(data.hungry), parseInt(data.sleepy), parseInt(data.happy))
+            console.log("The message is:")
+            console.log(message)
+            $("#message").html(message)
+            // show the modal
+            $('#petStatus').modal('show')
 
         })
     }
@@ -190,46 +196,84 @@ $(document).ready(function () {
     })
 
     // a functionn to resurrect the pet
+    $("#resurrectBtn").on("click", function(e){
+        e.preventDefault()
+        console.log("click")
+        // hide the modal
+        $('#petStatus').modal('hide')
+        var id = $(this).data("id")
+        console.log("The grave id is " + id)
+        let thunderImg = `
+        <div><img src="/assets/img/thunder.gif" id="thunder"  style="width:80%"></div>
+        `
+        $(".grave[data-id=" + id + "]").append(thunderImg)
 
+        setTimeout(function(id){
+            $('#thunder').remove()
+            // a PUT request to change the pet back to alive
+            let requestBody = {
+                action: "Resurrect"
+            } 
+            // PUT: change specific data of specific pet
+            $.ajax({
+                url: "/api/pets/" + id,
+                type: 'PUT',
+                data: requestBody,
+            }).then(function (result) {
+                console.log("The pet is resurrected!");
+                location.reload()            
+            })
+        }, 1200)
+    })
+
+
+
+
+    
+    // <img class="mt-5" src="/assets/img/thunder.gif" style="width:50%">
 
     // a function that generate the message of status in the info modal
-    const messageGenerator = function (hp, hungry, sleepy, happy) {
+    const messageGenerator = function (alive, hp, hungry, sleepy, happy) {
         var message = ''
-        if (hp === 1) {
-            message = message.concat(messages.hp1)
-        } else if (hp === 2) {
-            message = message.concat(messages.hp2)
-        }
-        if (hungry === 0) {
-            message = message.concat(messages.hungry0)
-        }
-        if (hungry === 1) {
-            message = message.concat(messages.hungry1)
-        }
-        if (hungry === 2) {
-            message = message.concat(messages.hungry2)
-        }
-        if (sleepy === 0) {
-            message = message.concat(messages.sleepy0)
-        }
-        if (sleepy === 1) {
-            message = message.concat(messages.sleepy1)
-        }
-        if (sleepy === 2) {
-            message = message.concat(messages.sleepy2)
-        }
-        if (happy === 0) {
-            message = message.concat(messages.happy0)
-        }
-        if (happy === 1) {
-            message = message.concat(messages.happy1)
-        }
-        if (happy === 2) {
-            message = message.concat(messages.happy2)
-        }
-        if (happy > 2 && sleepy > 2 && hungry > 2) {
-            let random = Math.floor(Math.random() * messages.goodStatus.length)
-            message = message.concat(messages.goodStatus[random])
+        if(alive){
+            if (hp === 1) {
+                message = message.concat(messages.hp1)
+            } else if (hp === 2) {
+                message = message.concat(messages.hp2)
+            }
+            if (hungry === 0) {
+                message = message.concat(messages.hungry0)
+            }
+            if (hungry === 1) {
+                message = message.concat(messages.hungry1)
+            }
+            if (hungry === 2) {
+                message = message.concat(messages.hungry2)
+            }
+            if (sleepy === 0) {
+                message = message.concat(messages.sleepy0)
+            }
+            if (sleepy === 1) {
+                message = message.concat(messages.sleepy1)
+            }
+            if (sleepy === 2) {
+                message = message.concat(messages.sleepy2)
+            }
+            if (happy === 0) {
+                message = message.concat(messages.happy0)
+            }
+            if (happy === 1) {
+                message = message.concat(messages.happy1)
+            }
+            if (happy === 2) {
+                message = message.concat(messages.happy2)
+            }
+            if (happy > 2 && sleepy > 2 && hungry > 2) {
+                let random = Math.floor(Math.random() * messages.goodStatus.length)
+                message = message.concat(messages.goodStatus[random])
+            }
+        }else{
+            message = message.concat(messages.die)
         }
         return message
     }
