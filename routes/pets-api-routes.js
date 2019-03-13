@@ -27,7 +27,7 @@ module.exports = function(app) {
 
 
     //post a new pet
-    app.post("/api/newpet/", function(req, res){
+    app.post("/api/newpet", function(req, res){
         db.Pet.create(req.body)
         .then (function (result){
             res.json(result);
@@ -68,69 +68,88 @@ module.exports = function(app) {
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (dbPets){
                     res.json(dbPets);
                 });
         }
-
+        console.log("run!!!")
+        console.log(req.body)
+        var action = req.body.action;
+        console.log(action)
         switch (action){
         // if Feed is sent then update hungry and lastFed to the current time
-        case Feed:
-        
+        case "Feed":
+            console.log("run feed!!!")
+            db.Pet.increment('hungry',
+            { where: {
+                id:req.params.id
+                }
+            });
             db.Pet.update({
-                hungry: db.Sequelize.literal('hungry + 1'),
+
                 lastFed: moment()
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
-                .then (function (dbPets){
-                    res.json(dbPets);
+                .then (function (result){
+                    console.log("Affected Row: " + result.affectedRows)
+                    res.end()
                 });
             break;
         
         // if Play is sent then update happy and lastPlayed to the current time
-        case Play: 
-        
+        case "Play": 
+            console.log("run play!!!")
+            db.Pet.increment('happy',
+            { where: {
+                id:req.params.id
+                }
+            });
             db.Pet.update({
-                happy: db.Sequelize.literal('happy + 1'),
                 lastPlayed: moment()
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
-                .then (function (dbPets){
-                    res.json(dbPets);
+                .then (function (result){
+                    console.log("Affected Row: " + result.affectedRows)
+                    res.end()
                 }); 
             break;  
         
         // if Sleep is sent then update sleepy and lastSlept to the current time
-        case Sleep: 
-
+        case "Sleep": 
+            console.log("run sleep!!!")
+            db.Pet.increment('sleepy',
+            { where: {
+                id:req.params.id
+                }
+            });
             db.Pet.update({
-                sleepy: db.Sequelize.literal('sleepy + 1'),
-                lastSlept: moment()
+                lastSlept: moment().format()
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
-                .then (function (dbPets){
-                    res.json(dbPets);
+                .then (function (result){
+                    console.log("Affected Row: " + result.affectedRows)
+                    res.end()                
                 });  
             break; 
        
         // if Kill is sent then update all status to 0
-        case Kill: 
-        
+        case "Kill": 
+            console.log("run kill!!!")
             db.Pet.update({
                 alive: 0,
                 sleepy: 0,
@@ -139,11 +158,12 @@ module.exports = function(app) {
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
-                .then (function (dbPets){
-                    res.json(dbPets);
+                .then (function (result){
+                    console.log("Affected Row: " + result.affectedRows)
+                    res.end()                
                 });
             break;
     }
