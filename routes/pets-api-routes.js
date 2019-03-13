@@ -2,7 +2,7 @@ var db = require("../models");
 var moment = require("moment");
 
 module.exports = function(app) {
-    //get all pets
+    //get all pets in the html route
     app.get("/", function(req, res){
         db.Pet.findAll({
             include: [{model: db.User}]
@@ -11,6 +11,16 @@ module.exports = function(app) {
             res.render("index", dbPets)
         });
     });
+
+    //get all pets
+    app.get("/api/pets", function(req, res){
+        db.Pet.findAll({
+            include: [{model: db.User}]
+        })
+        .then (function(dbPets){
+            res.json(dbPets);
+        });
+    })
 
     //get a specific pet info
     app.get("/api/pet/:id", function(req,res){
@@ -27,7 +37,7 @@ module.exports = function(app) {
 
 
     //post a new pet
-    app.post("/api/newpet/", function(req, res){
+    app.post("/api/newpet", function(req, res){
         db.Pet.create(req.body)
         .then (function (result){
             res.json(result);
@@ -121,7 +131,13 @@ module.exports = function(app) {
                 .then (function (dbPets){
                     res.json(dbPets);
                 });
-            break;   
+            break;
+        
+        case Refresh:
+            var hours;
+            db.Pets.update({
+
+            })
     }
     
     });
