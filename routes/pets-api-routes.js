@@ -38,7 +38,7 @@ module.exports = function(app) {
     app.put("/api/pets/:id", function(req, res){
         // if the hp and alive is sent then update that
         if (req.body.hp && req.body.alive){
-            db.Pets.update({
+            db.Pet.update({
                 hp: req.body.hp,
                 alive: req.body.alive
             },
@@ -51,12 +51,15 @@ module.exports = function(app) {
                     res.json(dbPets);
                 });
         }
+        console.log("run!!!")
+        console.log(req.body)
         var action = req.body.action;
+        console.log(action)
         switch (action){
         // if Feed is sent then update hungry and lastFed to the current time
-        case Feed:
-        
-            db.Pets.update({
+        case "Feed":
+            console.log("run feed!!!")
+            db.Pet.update({
                 hungry: db.Sequelize.literal('hungry + 1'),
                 lastFed: moment()
             },
@@ -65,16 +68,17 @@ module.exports = function(app) {
                         id: req.body.id
                     }
                 })
-                .then (function (dbPets){
-                    res.json(dbPets);
+                .then (function (result){
+                    console.log("Affected Row: " + result.affectedRows)
+                    res.end()
                 });
             break;
         
         // if Play is sent then update happy and lastPlayed to the current time
-        case Play: 
-        
-            db.Pets.update({
-                happy: db.Sequelize.literal('happy + 1'),
+        case "Play": 
+            console.log("run play!!!")
+            db.Pet.update({
+                happy:  + 1,
                 lastPlayed: moment()
             },
                 {
@@ -82,15 +86,16 @@ module.exports = function(app) {
                         id: req.body.id
                     }
                 })
-                .then (function (dbPets){
-                    res.json(dbPets);
+                .then (function (result){
+                    console.log("Affected Row: " + result.affectedRows)
+                    res.end()
                 }); 
             break;  
         
         // if Sleep is sent then update sleepy and lastSlept to the current time
-        case Sleep: 
-
-            db.Pets.update({
+        case "Sleep": 
+            console.log("run sleep!!!")
+            db.Pet.update({
                 sleepy: db.Sequelize.literal('sleepy + 1'),
                 lastSlept: moment()
             },
@@ -99,15 +104,16 @@ module.exports = function(app) {
                         id: req.body.id
                     }
                 })
-                .then (function (dbPets){
-                    res.json(dbPets);
+                .then (function (result){
+                    console.log("Affected Row: " + result.affectedRows)
+                    res.end()                
                 });  
             break; 
        
         // if Kill is sent then update all status to 0
-        case Kill: 
-        
-            db.Pets.update({
+        case "Kill": 
+            console.log("run kill!!!")
+            db.Pet.update({
                 alive: 0,
                 sleepy: 0,
                 hungry: 0,
@@ -118,8 +124,9 @@ module.exports = function(app) {
                         id: req.body.id
                     }
                 })
-                .then (function (dbPets){
-                    res.json(dbPets);
+                .then (function (result){
+                    console.log("Affected Row: " + result.affectedRows)
+                    res.end()                
                 });
             break;   
     }
