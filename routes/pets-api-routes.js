@@ -35,7 +35,7 @@ module.exports = function(app) {
     });
 
     app.put("/api/p/", function(req, res){
-        console.log("The put route");
+        console.log("The put route for all");
         console.log("the req.body: ", req.body);
         for(let i in req.body.pets){
             db.Pet.update({
@@ -61,22 +61,22 @@ module.exports = function(app) {
     // update the columns depending on what was sent
     app.put("/api/pets/:id", function(req, res){
         // if the hp and alive is sent then update that
-        if (req.body.hp && req.body.alive){
-            db.Pet.update({
-                hp: req.body.hp,
-                alive: req.body.alive
-            },
-                {
-                    where: {
-                        id: req.params.id
-                    }
-                })
-                .then (function (dbPets){
-                    res.json(dbPets);
-                });
-        }
+        // if (req.body.hp && req.body.alive){
+        //     db.Pet.update({
+        //         hp: req.body.hp,
+        //         alive: req.body.alive
+        //     },
+        //         {
+        //             where: {
+        //                 id: req.params.id
+        //             }
+        //         })
+        //         .then (function (dbPets){
+        //             res.json(dbPets);
+        //         });
+        // }
         console.log("run!!!")
-        console.log(req.body)
+        console.log("req.body of one pet", req.body)
         var action = req.body.action;
         console.log(action)
         switch (action){
@@ -90,7 +90,7 @@ module.exports = function(app) {
             });
             db.Pet.update({
 
-                lastFed: moment()
+                lastFed: moment().format()
             },
                 {
                     where: {
@@ -112,7 +112,7 @@ module.exports = function(app) {
                 }
             });
             db.Pet.update({
-                lastPlayed: moment()
+                lastPlayed: moment().format()
             },
                 {
                     where: {

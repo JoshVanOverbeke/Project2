@@ -136,12 +136,12 @@ var messages = {
         console.log(requestBody)
         // PUT: change specific data of specific pet
         $.ajax({
-            url: "/api/pets/" + id,
+            url: "/api/pets/" + 1,
             type: 'PUT',
             data: requestBody,
         }).then(function (result) {
             console.log("changes made!");
-            showPetInfo(id);
+            showPetInfo(1);
           })
 
     })
@@ -237,13 +237,10 @@ function timeUpdate (){
             if(dbData[i].hungry < 0){
                 dbData[i].hungry = 0;
                 dbData[i].lastFed = moment().subtract(4, 'hours').format();
-                console.log("LAst played up: ", dbData[i].lastFed)
             }
             if(dbData[i].sleepy <= 0){
                 dbData[i].sleepy = 0;
                 dbData[i].lastPlayed = moment().subtract(2, 'hours').format();
-                console.log("LAst played up: ", dbData[i].lastPlayed);
-                console.log("This moment minus 2: ", moment().subtract(5, 'hours').format())
             }
             if(dbData[i].happy < 0){
                 dbData[i].happy = 0;
