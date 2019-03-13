@@ -69,8 +69,13 @@ module.exports = function(app) {
         // if Feed is sent then update hungry and lastFed to the current time
         case "Feed":
             console.log("run feed!!!")
+            db.Pet.increment('hungry',
+            { where: {
+                id:req.body.id
+                }
+            });
             db.Pet.update({
-                hungry: db.Sequelize.literal('hungry + 1'),
+
                 lastFed: moment()
             },
                 {
