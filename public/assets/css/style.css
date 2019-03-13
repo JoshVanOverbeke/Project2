@@ -102,7 +102,11 @@ button{
     font-family: 'Roboto Condensed', sans-serif;
 }
 
-#aliveInfo, #resurrectInfo{
+#aliveInfo{
+    display: none
+}
+
+#resurrectInfo{
     display: none
 }
 
