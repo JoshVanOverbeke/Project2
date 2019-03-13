@@ -151,7 +151,7 @@ module.exports = function(app) {
             break;
 
         case "Resurrect": 
-            console.log("run resurrect!!!")
+            console.log("==========================run resurrect!!!=========================")
             db.Pet.update({
                 alive: 1,
                 sleepy: 5,

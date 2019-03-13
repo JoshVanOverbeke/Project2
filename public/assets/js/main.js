@@ -142,6 +142,7 @@ var messages = {
             //if it is alive
             //show and update the info
             if (alive) {
+                $("#resurrectInfo").css("display", "none")
                 $("#aliveInfo").css("display", "block")
                 //change the progress bars
                 $("#hpBar").attr("style", "width:" + hp + "%")
@@ -157,6 +158,7 @@ var messages = {
 
             } else {
                 //if it is not alive
+                $("#aliveInfo").css("display", "none")
                 $("#resurrectInfo").css("display", "block")
                 //change the data id of the resurrect button
                 console.log("The resurrect btn id is " + id)
@@ -214,12 +216,13 @@ var messages = {
         `
         $(".grave[data-id=" + id + "]").append(thunderImg)
 
-        setTimeout(function(id){
+        setTimeout(function(){
             $('#thunder').remove()
             // a PUT request to change the pet back to alive
             let requestBody = {
                 action: "Resurrect"
             } 
+            console.log(requestBody)
             // PUT: change specific data of specific pet
             $.ajax({
                 url: "/api/pets/" + id,
