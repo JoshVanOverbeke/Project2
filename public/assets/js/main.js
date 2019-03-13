@@ -28,7 +28,8 @@ var messages = {
     hp1: "I'm dying. Send me to the vet ASAP... ",
     play: "Playing ╭(●｀∀´●)╯╰(●’◡’●)╮ ... ",
     sleep: "(-.-)..zzZZ ",
-    feed: "Yum, yum, yum....ԅ(¯﹃¯ԅ) "
+    feed: "Yum, yum, yum....ԅ(¯﹃¯ԅ) ",
+    die: "You didn't love me, so I am dead. QAQ"
 }
     timeUpdate()
     console.log(moment().format())
@@ -123,6 +124,56 @@ var messages = {
         showPetInfo(id)
     })
 
+
+    // function to show/update info of specific pet
+    const showPetInfo = function (id) {
+        // GET: specific pet info
+        $.get("/api/pet/" + id, function (data) {
+            // convert into percentage
+            var name = data.name
+            var username = data.User.name
+            var alive = data.alive
+            var hp = parseInt(data.hp) * (100 / 3)
+            var hungry = parseInt(data.hungry) * 20
+            var sleepy = parseInt(data.sleepy) * 20
+            var happy = parseInt(data.happy) * 20
+            // change the texts and progress bars
+            $(".modal-title").html("<b>" + name + "</b> | Owner: " + username)
+            //if it is alive
+            //show and update the info
+            if (alive) {
+                $("#aliveInfo").css("display", "block")
+                //change the progress bars
+                $("#hpBar").attr("style", "width:" + hp + "%")
+                $("#hungryBar").attr("style", "width:" + hungry + "%")
+                $("#sleepyBar").attr("style", "width:" + sleepy + "%")
+                $("#happyBar").attr("style", "width:" + happy + "%")
+
+                //change the action btns' data-id
+                $("#killBtn").attr("data-id", id)
+                $("#feedBtn").attr("data-id", id)
+                $("#sleepBtn").attr("data-id", id)
+                $("#playBtn").attr("data-id", id)
+
+            } else {
+                //if it is not alive
+                $("#resurrectInfo").css("display", "block")
+                //change the data id of the resurrect button
+                console.log("The resurrect btn id is " + id)
+                $("#resurrectBtn").attr("data-id", id)
+            }
+
+            // manage the message:
+            let message = messageGenerator(alive, parseInt(data.hp), parseInt(data.hungry), parseInt(data.sleepy), parseInt(data.happy))
+            console.log("The message is:")
+            console.log(message)
+            $("#message").html(message)
+            // show the modal
+            $('#petStatus').modal('show')
+
+        })
+    }
+
     //click handlebars for actions
     $(".action").on("click", function (e) {
         e.preventDefault()
@@ -147,8 +198,42 @@ var messages = {
     })
 
     // a functionn to resurrect the pet
+    $("#resurrectBtn").on("click", function(e){
+        e.preventDefault()
+        console.log("click")
+        // hide the modal
+        $('#petStatus').modal('hide')
+        var id = $(this).data("id")
+        console.log("The grave id is " + id)
+        let thunderImg = `
+        <div><img src="/assets/img/thunder.gif" id="thunder"  style="width:80%"></div>
+        `
+        $(".grave[data-id=" + id + "]").append(thunderImg)
+
+        setTimeout(function(id){
+            $('#thunder').remove()
+            // a PUT request to change the pet back to alive
+            let requestBody = {
+                action: "Resurrect"
+            } 
+            // PUT: change specific data of specific pet
+            $.ajax({
+                url: "/api/pets/" + id,
+                type: 'PUT',
+                data: requestBody,
+            }).then(function (result) {
+                console.log("The pet is resurrected!");
+                location.reload()            
+            })
+        }, 1200)
+    })
 
 
+
+
+    
+
+    
 
 // ===========================================================================================
 function timeUpdate (){
@@ -287,38 +372,11 @@ function timeUpdate (){
     };
 
 
-    // function to show/update info of specific pet
-    const showPetInfo = function(id){
-        // GET: specific pet info
-        $.get("/api/pet/" + id, function (data) {
-            // convert into percentage
-            var hp = parseInt(data.hp) * (100 / 3)
-            var hungry = parseInt(data.hungry) * 20
-            var sleepy = parseInt(data.sleepy) * 20
-            var happy = parseInt(data.happy) * 20
-            console.log("hp: " + hp)
-            console.log("hungry: " + hungry)
-            console.log("sleepy: " + sleepy)
-            console.log("happy: " + happy)
-            // change the texts and progress bars
-            $(".modal-title").html("<b>" + data.name + "</b> | Owener: " + data.User.name)
-            $("#hpBar").attr("style", "width:" + hp + "%")
-            $("#hungryBar").attr("style", "width:" + hungry + "%")
-            $("#sleepyBar").attr("style", "width:" + sleepy + "%")
-            $("#happyBar").attr("style", "width:" + happy + "%")
-            // manage the message:
-            let message = messageGenerator(parseInt(data.hp),parseInt(data.hungry),parseInt(data.sleepy),parseInt(data.happy))
-            console.log("The message is:")
-            console.log(message)
-            $("#message").html(message)
-            // show the modal
-            $('#petStatus').modal('show')
-        })
-    }
 
-
-    const messageGenerator = function(hp, hungry, sleepy, happy){
-        var message = ''
+// a function that generate the message of status in the info modal
+const messageGenerator = function (alive, hp, hungry, sleepy, happy) {
+    var message = ''
+    if(alive){
         // a function that generate the message of status in the info modal
         const messageGenerator = function (hp, hungry, sleepy, happy) {
             var message = ''
@@ -358,12 +416,10 @@ function timeUpdate (){
                 let random = Math.floor(Math.random() * messages.goodStatus.length)
                 message = message.concat(messages.goodStatus[random])
             }
-            return message
         }
-
-
-    // a function that generate the message of action in the info modal
-
-
+        }else{
+            message = message.concat(messages.die)
+        }
+        return message
     }
 })
