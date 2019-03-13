@@ -192,7 +192,11 @@ var messages = {
             data: requestBody,
         }).then(function (result) {
             console.log("changes made!");
-            showPetInfo(id);
+            if(action==="Kill"){
+                location.reload()
+            }else{
+                showPetInfo(id);
+            }
           })
 
     })
@@ -378,7 +382,6 @@ const messageGenerator = function (alive, hp, hungry, sleepy, happy) {
     var message = ''
     if(alive){
         // a function that generate the message of status in the info modal
-        const messageGenerator = function (hp, hungry, sleepy, happy) {
             var message = ''
             if (hp === 1) {
                 message = message.concat(messages.hp1)
@@ -416,10 +419,10 @@ const messageGenerator = function (alive, hp, hungry, sleepy, happy) {
                 let random = Math.floor(Math.random() * messages.goodStatus.length)
                 message = message.concat(messages.goodStatus[random])
             }
-        }
-        }else{
-            message = message.concat(messages.die)
-        }
+    }else{
+        message = message.concat(messages.die)
+    }
         return message
     }
+
 })
