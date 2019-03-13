@@ -132,12 +132,7 @@ module.exports = function(app) {
                     res.json(dbPets);
                 });
             break;
-        
-        case Refresh:
-            var hours;
-            db.Pets.update({
 
-            })
     }
     
     });
