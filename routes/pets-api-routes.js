@@ -54,7 +54,7 @@ module.exports = function(app) {
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (dbPets){
@@ -71,7 +71,7 @@ module.exports = function(app) {
             console.log("run feed!!!")
             db.Pet.increment('hungry',
             { where: {
-                id:req.body.id
+                id:req.params.id
                 }
             });
             db.Pet.update({
@@ -80,7 +80,7 @@ module.exports = function(app) {
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (result){
@@ -92,13 +92,17 @@ module.exports = function(app) {
         // if Play is sent then update happy and lastPlayed to the current time
         case "Play": 
             console.log("run play!!!")
+            db.Pet.increment('happy',
+            { where: {
+                id:req.params.id
+                }
+            });
             db.Pet.update({
-                happy:  + 1,
                 lastPlayed: moment()
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (result){
@@ -110,13 +114,17 @@ module.exports = function(app) {
         // if Sleep is sent then update sleepy and lastSlept to the current time
         case "Sleep": 
             console.log("run sleep!!!")
+            db.Pet.increment('sleepy',
+            { where: {
+                id:req.params.id
+                }
+            });
             db.Pet.update({
-                sleepy: db.Sequelize.literal('sleepy + 1'),
-                lastSlept: moment()
+                lastSlept: moment().
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (result){
@@ -136,7 +144,7 @@ module.exports = function(app) {
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (result){
