@@ -1,3 +1,5 @@
+$(document).ready(function () {
+        //clickhandlers for pets
 var selectedPetSrc = ""
 
 var messages = {
@@ -29,9 +31,8 @@ var messages = {
     feed: "Yum, yum, yum....ԅ(¯﹃¯ԅ) ",
     die: "You didn't love me, so I am dead. QAQ"
 }
-
-
-$(document).ready(function () {
+    timeUpdate()
+    console.log(moment().format())
     //clickhandlers for sign up button model
     $("#signupBtn").on("click", function (e) {
         e.preventDefault()
@@ -192,7 +193,8 @@ $(document).ready(function () {
         }).then(function (result) {
             console.log("changes made!");
             showPetInfo(id);
-        })
+          })
+
     })
 
     // a functionn to resurrect the pet
@@ -230,12 +232,154 @@ $(document).ready(function () {
 
 
     
-    // <img class="mt-5" src="/assets/img/thunder.gif" style="width:50%">
 
-    // a function that generate the message of status in the info modal
-    const messageGenerator = function (alive, hp, hungry, sleepy, happy) {
-        var message = ''
-        if(alive){
+    
+
+// ===========================================================================================
+function timeUpdate (){
+    let petArray = [];
+    $.get("/api/pets/", function(dbData){
+        let petA = [];
+        for(let i in dbData){
+            let momDifFed = parseFloat(moment().diff(dbData[i].lastFed, 'hours', true));
+            let momDifSlept = parseFloat(moment().diff(dbData[i].lastSlept, 'hours', true));
+            let momDifPlayed = parseFloat(moment().diff(dbData[i].lastPlayed, 'hours', true));
+            // =================================================================================
+            //if 10 hours have passed, subtract 5 from hungry
+            if (momDifFed>=10){
+                //update [dbData[i]].hungry
+                dbData[i].hungry -= 5;
+                dbData[i].lastFed = moment().format()
+            }
+            //if 8 hours have passed, subtract 4 from hungry/sleepy/play
+            //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
+            else if(momDifFed>= 8){
+                dbData[i].hungry -= 4;
+                dbData[i].lastFed = moment().subtract(momDifFed - 8, 'hours').format()
+            }
+            else if(momDifFed>= 6){
+                dbData[i].hungry -= 3;
+                dbData[i].lastFed = moment().subtract(momDifFed - 6, 'hours').format()
+            }
+            else if(momDifFed>= 4){
+                dbData[i].hungry -= 2;
+                dbData[i].lastFed = moment().subtract(momDifFed - 4, 'hours').format()
+            }
+            else if(momDifFed>= 2){
+                dbData[i].hungry -= 1;
+                dbData[i].lastFed = moment().subtract(momDifFed - 2, 'hours').format()
+            };
+            // =================================================================================
+            //if 10 hours have passed, subtract 5 from sleepy
+            if (momDifSlept>=10){
+                //update [dbData[i]].hungry
+                dbData[i].sleepy -= 5;
+            }
+            //if 8 hours have passed, subtract 4 from hungry/sleepy/play
+            //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
+            else if(momDifSlept>= 8){
+                dbData[i].sleepy -= 4;
+                dbData[i].lastSlept = moment().subtract(momDifSlept - 8, 'hours').format()
+            }
+            else if(momDifSlept>= 6){
+                dbData[i].sleepy -= 3;
+                dbData[i].lastSlept = moment().subtract(momDifSlept - 6, 'hours').format()
+            }
+            else if(momDifSlept>= 4){
+                dbData[i].sleepy -= 2;
+                dbData[i].lastSlept = moment().subtract(momDifSlept - 4, 'hours').format()
+            }
+            else if(momDifSlept>= 2){
+                dbData[i].sleepy -= 1;
+                dbData[i].lastSlept = moment().subtract(momDifSlept - 2, 'hours').format()
+            };
+            // =================================================================================
+            //if 10 hours have passed, subtract 5 from happy
+            if (momDifPlayed>=10){
+                //update [dbData[i]].hungry
+                dbData[i].happy -= 5;
+            }
+            //if 8 hours have passed, subtract 4 from hungry/sleepy/play
+            //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
+            else if(momDifPlayed>= 8){
+                dbData[i].happy -= 4;
+                dbData[i].lastPlayed = moment().subtract(momDifPlayed - 8, 'hours').format()
+            }
+            else if(momDifPlayed>= 6){
+                dbData[i].happy -= 3;
+                dbData[i].lastPlayed = moment().subtract(momDifPlayed - 6, 'hours').format()
+            }
+            else if(momDifPlayed>= 4){
+                dbData[i].happy -= 2;
+                dbData[i].lastPlayed = moment().subtract(momDifPlayed - 4, 'hours').format()
+            }
+            else if(momDifPlayed>= 2){
+                dbData[i].happy -= 1;
+                dbData[i].lastPlayed = moment().subtract(momDifPlayed - 2, 'hours').format()
+            };
+            // =================================================================================
+            //set statuses to zero if below zero
+            if(dbData[i].hungry < 0){
+                dbData[i].hungry = 0;
+                dbData[i].lastFed = moment().subtract(4, 'hours').format();
+                console.log("LAst played up: ", dbData[i].lastFed)
+            }
+            if(dbData[i].sleepy <= 0){
+                dbData[i].sleepy = 0;
+                dbData[i].lastPlayed = moment().subtract(2, 'hours').format();
+                console.log("LAst played up: ", dbData[i].lastPlayed);
+                console.log("This moment minus 2: ", moment().subtract(5, 'hours').format())
+            }
+            if(dbData[i].happy < 0){
+                dbData[i].happy = 0;
+            }
+            if(dbData[i].hungry === 0 && dbData[i].sleepy === 0 && dbData[i].happy ===0){
+                dbData[i].hp = 0;
+                dbData[i].alive = 0
+            }
+            else if(dbData[i].hungry === 0 && dbData[i].sleepy === 0 || dbData[i].sleepy === 0 && dbData[i].happy ===0 || dbData[i].hungry === 0 && dbData[i].happy ===0){
+                dbData[i].hp = 1
+            }
+            else if(dbData[i].hungry === 0 || dbData[i].sleepy === 0|| dbData[i].happy ===0){
+                dbData[i].hp = 2
+            }
+            else{
+                dbData[i].hp = 3;
+            }
+
+            petA.push(dbData[i])
+
+            
+        };
+        petArray = petA
+        }).then(function(result){
+            let petObj = {
+                pets: petArray
+            }
+            updateStatus(petObj);
+            })
+    };
+    // ===========================================================================================
+    function updateStatus(Obj){
+        $.ajax({
+            url: "/api/p/",
+            type: 'PUT',
+            data: Obj,
+        }).then(function(result){
+            console.log("changes made!");
+            //update the info
+        })
+    };
+
+
+
+// a function that generate the message of status in the info modal
+const messageGenerator = function (alive, hp, hungry, sleepy, happy) {
+    var message = ''
+    if(alive){
+        // a function that generate the message of status in the info modal
+        const messageGenerator = function (hp, hungry, sleepy, happy) {
+            var message = ''
             if (hp === 1) {
                 message = message.concat(messages.hp1)
             } else if (hp === 2) {
@@ -272,14 +416,10 @@ $(document).ready(function () {
                 let random = Math.floor(Math.random() * messages.goodStatus.length)
                 message = message.concat(messages.goodStatus[random])
             }
+        }
         }else{
             message = message.concat(messages.die)
         }
         return message
     }
-
-
-    // a function that generate the message of action in the info modal
-
-
 })

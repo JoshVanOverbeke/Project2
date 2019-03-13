@@ -1,28 +1,18 @@
 var db = require("../models");
 var moment = require("moment");
 
+
 module.exports = function(app) {
-    //get all pets in the html route
-    app.get("/", function(req, res){
+    //get all pets
+    //get a specific pet info
+    app.get("/api/pets/", function(req,res){
         db.Pet.findAll({
-            include: [{model: db.User}]
+            include: [{model: db.User}],
         })
         .then (function (dbPets){
-            res.render("index", dbPets)
-        });
-    });
-
-    //get all pets
-    app.get("/api/pets", function(req, res){
-        db.Pet.findAll({
-            include: [{model: db.User}]
-        })
-        .then (function(dbPets){
             res.json(dbPets);
         });
-    })
-
-    //get a specific pet info
+    });
     app.get("/api/pet/:id", function(req,res){
         db.Pet.findOne({
             include: [{model: db.User}],
@@ -33,7 +23,7 @@ module.exports = function(app) {
         .then (function (dbPets){
             res.json(dbPets);
         });
-    })
+    });
 
 
     //post a new pet
@@ -43,7 +33,31 @@ module.exports = function(app) {
             res.json(result);
         });
     });
-  
+
+    app.put("/api/p/", function(req, res){
+        console.log("The put route");
+        console.log("the req.body: ", req.body);
+        for(let i in req.body.pets){
+            db.Pet.update({
+                alive: req.body.pets[i].alive,
+                hp: req.body.pets[i].hp,
+                hungry: req.body.pets[i].hungry,
+                sleepy: req.body.pets[i].sleepy,
+                happy: req.body.pets[i].happy,
+                lastFed: req.body.pets[i].lastFed,
+                lastSlept: req.body.pets[i].lastSlept,
+                lastPlayed: req.body.pets[i].lastPlayed
+            },
+            {
+                where: {
+                    id: req.body.pets[i].id
+                }
+            })
+            .then (function (dbPets){
+                console.log("finished");
+            });
+        }
+    });
     // update the columns depending on what was sent
     app.put("/api/pets/:id", function(req, res){
         // if the hp and alive is sent then update that
@@ -54,7 +68,7 @@ module.exports = function(app) {
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (dbPets){
@@ -81,7 +95,7 @@ module.exports = function(app) {
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (result){
@@ -93,13 +107,17 @@ module.exports = function(app) {
         // if Play is sent then update happy and lastPlayed to the current time
         case "Play": 
             console.log("run play!!!")
+            db.Pet.increment('happy',
+            { where: {
+                id:req.params.id
+                }
+            });
             db.Pet.update({
-                happy:  + 1,
                 lastPlayed: moment()
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (result){
@@ -111,13 +129,17 @@ module.exports = function(app) {
         // if Sleep is sent then update sleepy and lastSlept to the current time
         case "Sleep": 
             console.log("run sleep!!!")
+            db.Pet.increment('sleepy',
+            { where: {
+                id:req.params.id
+                }
+            });
             db.Pet.update({
-                sleepy: db.Sequelize.literal('sleepy + 1'),
-                lastSlept: moment()
+                lastSlept: moment().format()
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (result){
@@ -137,7 +159,7 @@ module.exports = function(app) {
             },
                 {
                     where: {
-                        id: req.body.id
+                        id: req.params.id
                     }
                 })
                 .then (function (result){
@@ -145,7 +167,6 @@ module.exports = function(app) {
                     res.end()                
                 });
             break;
-
     }
     
     });
