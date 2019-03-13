@@ -155,8 +155,11 @@ module.exports = function(app) {
             db.Pet.update({
                 alive: 1,
                 sleepy: 5,
+                lastSlept: moment().format(),
                 hungry: 5,
+                lastFed: moment().format(),
                 happy: 5,
+                lastPlayed: moment().format(),
                 hp: 3
             },
                 {
