@@ -1,4 +1,5 @@
-    //clickhandlers for pets
+$(document).ready(function () {
+        //clickhandlers for pets
 var selectedPetSrc = ""
 
 var messages = {
@@ -29,9 +30,6 @@ var messages = {
     sleep: "(-.-)..zzZZ ",
     feed: "Yum, yum, yum....ԅ(¯﹃¯ԅ) "
 }
-
-
-$(document).ready(function () {
     timeUpdate()
     console.log(moment().format())
     //clickhandlers for sign up button model
@@ -124,51 +122,6 @@ $(document).ready(function () {
         console.log("Show the info of pet id: " + id)
         showPetInfo(id)
     })
-
-    
-    // function to show/update info of specific pet
-    const showPetInfo = function (id) {
-        // GET: specific pet info
-        $.get("/api/pet/" + id, function (data) {
-            // convert into percentage
-            var name = data.name
-            var username = data.User.name
-            var alive = data.alive
-            var hp = parseInt(data.hp) * (100 / 3)
-            var hungry = parseInt(data.hungry) * 20
-            var sleepy = parseInt(data.sleepy) * 20
-            var happy = parseInt(data.happy) * 20
-            // change the texts and progress bars
-            $(".modal-title").html("<b>" + name + "</b> | Owner: " + username)
-            //if it is alive
-            //show and update the info
-            if(alive){
-
-                //change the progress bars
-                $("#hpBar").attr("style", "width:" + hp + "%")
-                $("#hungryBar").attr("style", "width:" + hungry + "%")
-                $("#sleepyBar").attr("style", "width:" + sleepy + "%")
-                $("#happyBar").attr("style", "width:" + happy + "%")
-                
-                //change the action btns' data-id
-                $("#killBtn").attr("data-id", id)
-                $("#feedBtn").attr("data-id", id)
-                $("#sleepBtn").attr("data-id", id)
-                $("#playBtn").attr("data-id", id)
-                
-                // manage the message:
-                let message = messageGenerator(parseInt(data.hp), parseInt(data.hungry), parseInt(data.sleepy), parseInt(data.happy))
-                console.log("The message is:")
-                console.log(message)
-                $("#message").html(message)
-                // show the modal
-                $('#petStatus').modal('show')
-            }
-            //if it is not alive
-            //show the resurrect button
-
-        })
-    }
 
     //click handlebars for actions
     $(".action").on("click", function (e) {
