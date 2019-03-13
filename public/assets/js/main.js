@@ -140,14 +140,14 @@ $(document).ready(function () {
             data: "requestBody",
         }).then(function (result) {
             console.log("changes made!");
-            //uodate the info
+            //if it is alive
+            //show and update the info
             showPetInfo(id);
+
+            //if it is not alive
+            //show the resurrect button
         })
     })
-
-
-
-
 })
 
 
@@ -180,7 +180,10 @@ const showPetInfo = function (id) {
     })
 }
 
+// a functionn to resurrect the pet
 
+
+// a function that generate the message in the info modal
 const messageGenerator = function (hp, hungry, sleepy, happy) {
     var message = ''
     if (hp === 1) {
