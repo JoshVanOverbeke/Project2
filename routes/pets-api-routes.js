@@ -1,9 +1,18 @@
 var db = require("../models");
 var moment = require("moment");
 
+
 module.exports = function(app) {
     //get all pets
     //get a specific pet info
+    app.get("/api/pets/", function(req,res){
+        db.Pet.findAll({
+            include: [{model: db.User}],
+        })
+        .then (function (dbPets){
+            res.json(dbPets);
+        });
+    });
     app.get("/api/pet/:id", function(req,res){
         db.Pet.findOne({
             include: [{model: db.User}],
@@ -24,12 +33,36 @@ module.exports = function(app) {
             res.json(result);
         });
     });
-  
+
+    app.put("/api/p/", function(req, res){
+        console.log("The put route");
+        console.log("the req.body: ", req.body);
+        for(let i in req.body.pets){
+            db.Pet.update({
+                alive: req.body.pets[i].alive,
+                hp: req.body.pets[i].hp,
+                hungry: req.body.pets[i].hungry,
+                sleepy: req.body.pets[i].sleepy,
+                happy: req.body.pets[i].happy,
+                lastFed: req.body.pets[i].lastFed,
+                lastSlept: req.body.pets[i].lastSlept,
+                lastPlayed: req.body.pets[i].lastPlayed
+            },
+            {
+                where: {
+                    id: req.body.pets[i].id
+                }
+            })
+            .then (function (dbPets){
+                console.log("finished");
+            });
+        }
+    });
     // update the columns depending on what was sent
     app.put("/api/pets/:id", function(req, res){
         // if the hp and alive is sent then update that
         if (req.body.hp && req.body.alive){
-            db.Pets.update({
+            db.Pet.update({
                 hp: req.body.hp,
                 alive: req.body.alive
             },
@@ -47,7 +80,7 @@ module.exports = function(app) {
         // if Feed is sent then update hungry and lastFed to the current time
         case Feed:
         
-            db.Pets.update({
+            db.Pet.update({
                 hungry: db.Sequelize.literal('hungry + 1'),
                 lastFed: moment()
             },
@@ -64,7 +97,7 @@ module.exports = function(app) {
         // if Play is sent then update happy and lastPlayed to the current time
         case Play: 
         
-            db.Pets.update({
+            db.Pet.update({
                 happy: db.Sequelize.literal('happy + 1'),
                 lastPlayed: moment()
             },
@@ -81,28 +114,7 @@ module.exports = function(app) {
         // if Sleep is sent then update sleepy and lastSlept to the current time
         case Sleep: 
 
-<<<<<<< HEAD
-    //change specific pet status
-    // app.put("/api/pet/:id", function(req, res){
-    //     //if or switch to identify the action
-    //     //     req.body data structure
-    //     //     {
-    //     //         action: action (Kill, Feed, Sleep, Play(all first letter uppercase))
-    //     //     }
-    //     // db.Pet.update(
-    //         // update specific info according to the action above
-    //     req.body,
-    //     {
-    //         where: {
-    //             id: req.body.id
-    //         }
-    //     })
-    //     .then (function (result){
-    //         res.json(result);
-    //     });
-    // });
-=======
-            db.Pets.update({
+            db.Pet.update({
                 sleepy: db.Sequelize.literal('sleepy + 1'),
                 lastSlept: moment()
             },
@@ -119,7 +131,7 @@ module.exports = function(app) {
         // if Kill is sent then update all status to 0
         case Kill: 
         
-            db.Pets.update({
+            db.Pet.update({
                 alive: 0,
                 sleepy: 0,
                 hungry: 0,
@@ -133,9 +145,8 @@ module.exports = function(app) {
                 .then (function (dbPets){
                     res.json(dbPets);
                 });
-            break;   
+            break;
     }
     
     });
->>>>>>> 4007e38e129958b711447043c139a0c182f2e01b
 };
