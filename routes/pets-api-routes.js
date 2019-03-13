@@ -1,28 +1,18 @@
 var db = require("../models");
 var moment = require("moment");
 
+
 module.exports = function(app) {
-    //get all pets in the html route
-    app.get("/", function(req, res){
+    //get all pets
+    //get a specific pet info
+    app.get("/api/pets/", function(req,res){
         db.Pet.findAll({
-            include: [{model: db.User}]
+            include: [{model: db.User}],
         })
         .then (function (dbPets){
-            res.render("index", dbPets)
-        });
-    });
-
-    //get all pets
-    app.get("/api/pets", function(req, res){
-        db.Pet.findAll({
-            include: [{model: db.User}]
-        })
-        .then (function(dbPets){
             res.json(dbPets);
         });
-    })
-
-    //get a specific pet info
+    });
     app.get("/api/pet/:id", function(req,res){
         db.Pet.findOne({
             include: [{model: db.User}],
@@ -33,7 +23,7 @@ module.exports = function(app) {
         .then (function (dbPets){
             res.json(dbPets);
         });
-    })
+    });
 
 
     //post a new pet
@@ -43,7 +33,31 @@ module.exports = function(app) {
             res.json(result);
         });
     });
-  
+
+    app.put("/api/p/", function(req, res){
+        console.log("The put route");
+        console.log("the req.body: ", req.body);
+        for(let i in req.body.pets){
+            db.Pet.update({
+                alive: req.body.pets[i].alive,
+                hp: req.body.pets[i].hp,
+                hungry: req.body.pets[i].hungry,
+                sleepy: req.body.pets[i].sleepy,
+                happy: req.body.pets[i].happy,
+                lastFed: req.body.pets[i].lastFed,
+                lastSlept: req.body.pets[i].lastSlept,
+                lastPlayed: req.body.pets[i].lastPlayed
+            },
+            {
+                where: {
+                    id: req.body.pets[i].id
+                }
+            })
+            .then (function (dbPets){
+                console.log("finished");
+            });
+        }
+    });
     // update the columns depending on what was sent
     app.put("/api/pets/:id", function(req, res){
         
@@ -53,14 +67,20 @@ module.exports = function(app) {
         // if Feed is sent then update hungry and lastFed to the current time
         case "Feed":
             console.log("run feed!!!")
+            console.log(moment().format())
+            // let now = date("Y-m-d H:i:s", moment().format());
             db.Pet.increment('hungry',
             { where: {
-                id:req.params.id
+                id: req.params.id
                 }
             });
             db.Pet.update({
+<<<<<<< HEAD
 
                 lastFed: moment().format()
+=======
+                lastFed: db.Sequelize.col('updatedAt')
+>>>>>>> master
             },
                 {
                     where: {
@@ -152,7 +172,6 @@ module.exports = function(app) {
                     res.end()                
                 });
             break;
-
     }
     
     });

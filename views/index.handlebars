@@ -34,7 +34,9 @@
                 {{/if}}
                 {{#unless this.alive}}
                     <article data-id={{this.id}}>
-                        <img src="/assets/img/grave.png">
+                        <div class="grave"  data-id={{this.id}}>
+                            <img src="/assets/img/grave.png">
+                        </div>
                     </article>
                 {{/unless}}
             {{/if}}
@@ -53,7 +55,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="aliveInfo">
                 <div class="row align-items-center justify-content-around">
                     <div class="col-md-2 p-0">
                     </div>
@@ -126,6 +128,11 @@
                     <div class="col-md-2 p-0">
                         <button class="btn btn-warning py-0 action" style="width:70px; height: 30px;" id="playBtn">Play</button>
                     </div>
+                </div>`
+            </div>
+            <div class="modal-body" id="resurrectInfo">
+                <div class="text-center">
+                    <button type="button" class="btn btn-danger btn-lg btn-block my-5" id="resurrectBtn" data-id="#">Resurrect</button>
                 </div>
             </div>
             <div class="modal-footer" style="display: block">
