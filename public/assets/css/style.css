@@ -4,8 +4,7 @@ body{
 .container-fluid{
     background-image: url("../img/trees.png");
     background-repeat: repeat-y;
-    height: 100vh;
-    background-position: center
+    background-position: center top
 }
 .banner{
     background-image: url("../img/banner2.png");
@@ -101,4 +100,17 @@ img{
 
 button{
     font-family: 'Roboto Condensed', sans-serif;
+}
+
+#aliveInfo{
+    display: none
+}
+
+#resurrectInfo{
+    display: none
+}
+
+#thunder{
+    position: absolute;
+    top: -100px
 }
