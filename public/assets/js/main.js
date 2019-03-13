@@ -104,7 +104,7 @@ $(document).ready(function () {
     // a function that displays pet options
     const creatNewPetList = function () {
         // run the src of gifs in a for loop
-        for (let i = 0; i < 19; i++) {
+        for (let i = 0; i < 18; i++) {
             let src = "/assets/img/gif/pet" + i + ".gif"
             let articleDiv = '<div class="selectPetBox p-2" style="align-items: center" data-img="' + src + '"><div style="align-self: center; justify-self: center;"><img src="' + src + '"></div></div>'
             // append to div cards-createNewPet
@@ -183,7 +183,7 @@ const showPetInfo = function (id) {
 // a functionn to resurrect the pet
 
 
-// a function that generate the message in the info modal
+// a function that generate the message of status in the info modal
 const messageGenerator = function (hp, hungry, sleepy, happy) {
     var message = ''
     if (hp === 1) {
@@ -226,3 +226,5 @@ const messageGenerator = function (hp, hungry, sleepy, happy) {
 }
 
 
+// a function that generate the message of action in the info modal
+ 
