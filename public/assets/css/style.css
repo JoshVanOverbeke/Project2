@@ -74,7 +74,7 @@ img{
 }
 
 .selectedPetBox{
-    border: 5px solid #F5A623
+    border: 5px solid red
 }
 
 
@@ -97,4 +97,8 @@ img{
 	border-bottom: 0;
 	margin-top: -0.344em;
 	margin-left: -0.687em;
+}
+
+button{
+    font-family: 'Roboto Condensed', sans-serif;
 }
