@@ -75,12 +75,8 @@ module.exports = function(app) {
                 }
             });
             db.Pet.update({
-<<<<<<< HEAD
 
                 lastFed: moment().format()
-=======
-                lastFed: db.Sequelize.col('updatedAt')
->>>>>>> master
             },
                 {
                     where: {
