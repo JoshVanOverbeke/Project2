@@ -12,10 +12,10 @@
             </button>
             <div class="justify-content-end collapse navbar-collapse" id="navbarTogglerDemo01">
                 <div class="pr-4">
-                    <button class="btn btn-danger my-2 my-sm-0 mx-2" id="create" data-toggle="modal"
-                        data-target="#createPetModal">Create A Pet</button>
-                    <button class="btn btn-warning my-2 my-sm-0 mx-2">Log In</button>
-                    <button class="btn btn-warning my-2 my-sm-0 mx-2">Sign Up</button>
+                    <button class="btn btn-danger my-2 my-sm-0 mx-2" id="createPet">Create A Pet</button>
+                    <button class="btn btn-warning my-2 my-sm-0 mx-2" data-toggle="modal" data-target="#loginModal">Log
+                        In</button>
+                    <button class="btn btn-warning my-2 my-sm-0 mx-2" data-toggle="modal" data-target="#signupModal">Sign Up</button>
                 </div>
             </div>
         </nav>
@@ -25,9 +25,19 @@
 <div class="container-fluid mt-5">
     <div class="cards">
         {{#each this}}
-        <article data-id={{this.id}}>
-            <img src={{this.img}}>
-        </article>
+            {{#if this.id}}
+                {{#if this.alive}}
+
+                    <article data-id={{this.id}}>
+                        <img src={{this.img}}>
+                    </article>
+                {{/if}}
+                {{#unless this.alive}}
+                    <article data-id={{this.id}}>
+                        <img src="/assets/img/grave.png">
+                    </article>
+                {{/unless}}
+            {{/if}}
         {{/each}}
     </div>
 </div>
@@ -35,10 +45,10 @@
 {{!-- modal for pet info --}}
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"
     id="petStatus">
-    <div class="modal-dialog modal-dialog-centered .modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content p-2">
             <div class="modal-header">
-                <h3 class="modal-title" id="exampleModalCenterTitle"><b>Bearer</b> | Owener: Jack</h3>
+                <h3 class="modal-title" id="exampleModalCenterTitle"><b>Bearer</b> | Owner: Jack</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -130,29 +140,103 @@
 <!-- Modal for create new pet-->
 <div class="modal fade" id="createPetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalScrollableTitle">Modal title</h5>
+                <span><img src="/assets/img/boy.png"></span><span class="pt-4 pl-1">
+                    <h3 class="modal-title" id="exampleModalScrollableTitle"><b>Pick one and creat a new pet!</b></h3>
+                </span>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="container-fluid mt-5">
-                    <div class="cards">
-                        <article>
-                            <img src="#">
-                        </article>
+                <div class="container-fluid">
+                    <div class="cards-createNewPet">
+
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+            <div class="modal-footer" style="justify-content: center">
+                <div class="row p-2" style="width:100%">
+                    <input class="text-center py-2 mb-2" style="width:100%" id="newPetName"
+                        placeholder="Give your pet a name!"></input>
+                    <button type="button" class="btn btn-danger btn-lg btn-block" id="createNewPetBtn">Create</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+{{!-- modal for log in --}}
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content p-2">
+            <div class="modal-header">
+                <span><img src="/assets/img/boy.png"></span><span class="pt-4 pl-1">
+                    <h3 class="modal-title" id="exampleModalScrollableTitle"><b>Welcome back, feeder!</b></h3>
+                </span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="name" class="form-control" id="username" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="loginBtn" type="button" class="btn btn-warning btn-lg btn-block">Log in</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{!-- modal for Sign Up --}}
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content p-2">
+            <div class="modal-header">
+                <span><img src="/assets/img/boy.png"></span><span class="pt-4 pl-1">
+                    <h3 class="modal-title" id="exampleModalScrollableTitle"><b>Welcome, new feeder!</b></h3>
+                </span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="name" class="form-control" id="username" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="signupBtn" type="button" class="btn btn-warning btn-lg btn-block">Sign up</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
