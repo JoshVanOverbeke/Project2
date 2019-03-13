@@ -51,7 +51,7 @@ module.exports = function(app) {
                     res.json(dbPets);
                 });
         }
-
+        var action = req.body.action;
         switch (action){
         // if Feed is sent then update hungry and lastFed to the current time
         case Feed:
