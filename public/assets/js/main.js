@@ -112,7 +112,7 @@ $(document).ready(function () {
         }
     }
 
-    //clickhandlers for pets
+    //clickhandlers for pets in the park for showing info
     $("article").on("click", function (e) {
         e.preventDefault()
         console.log("click")

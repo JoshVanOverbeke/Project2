@@ -25,9 +25,19 @@
 <div class="container-fluid mt-5">
     <div class="cards">
         {{#each this}}
-        <article data-id={{this.id}}>
-            <img src={{this.img}}>
-        </article>
+            {{#if this.id}}
+                {{#if this.alive}}
+
+                    <article data-id={{this.id}}>
+                        <img src={{this.img}}>
+                    </article>
+                {{/if}}
+                {{#unless this.alive}}
+                    <article data-id={{this.id}}>
+                        <img src="/assets/img/grave.png">
+                    </article>
+                {{/unless}}
+            {{/if}}
         {{/each}}
     </div>
 </div>
