@@ -206,7 +206,16 @@ $(document).ready(function () {
             name: name,
             img: img,
         }
+        if (img == ""){
+            console.log("Need to select a pet")
+            $("#errorSelectPet").html("Please select a pet!")
+        }
+        else if (name == ""){
+            console.log("Need to select a name")
+            $("#errorSelectPet").html("Please name your pet!")
+        }
         // hit the POST request path
+        else {
         $.ajax({
             url: "/api/newpet",
             type: 'POST',
@@ -216,7 +225,8 @@ $(document).ready(function () {
             location.reload()
             attachToken();
         })
-    })
+    }
+})
 
 
     // a function that displays pet options

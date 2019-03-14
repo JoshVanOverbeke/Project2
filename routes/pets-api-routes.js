@@ -69,17 +69,24 @@ var moment = require("moment");
         
         var action = req.body.action;
         console.log(action)
+        var actionKey;
         switch (action){
         // if Feed is sent then update hungry and lastFed to the current time
         case "Feed":
-            console.log("run feed!!!")
-            console.log(moment().format())
-            // let now = date("Y-m-d H:i:s", moment().format());
-            db.Pet.increment('hungry',
-            { where: {
-                id: req.params.id
-                }
-            });
+        // increment hungry by one
+            db.Pet.findOne(
+                {
+                    where: {
+                        id:req.params.id
+                    }
+                })
+                .then(function(foundPet) {
+                return foundPet.update({hungry: parseInt(foundPet.hungry)+1})
+                })
+                .then(function(result) {
+                console.log("results: ", result)
+                });
+            // update the lastFed time
             db.Pet.update({
 
                 lastFed: moment().format()
@@ -92,25 +99,40 @@ var moment = require("moment");
                 .then (function (result){
                     res.end()
                 });
-            
+        // if hungry is at zero then increase hp by one
             if (req.body.hungry=0){
-                db.Pet.increment('hp',
-                {
-                    where: {
-                        id: req.params.id
-                    }
-                });
+                db.Pet.findOne(
+                    {
+                        where: {
+                            id:req.params.id
+                        }
+                    })
+                    .then(function(foundPet) {
+                    return foundPet.update({hp: parseInt(foundPet.hp)+1})
+                    })
+                    .then(function(result) {
+                    console.log("results: ", result)
+                    });
             }
             break;
         
         // if Play is sent then update happy and lastPlayed to the current time
         case "Play": 
             console.log("run play!!!")
-            db.Pet.increment('happy',
-            { where: {
-                id:req.params.id
-                }
-            });
+            // increment happy by one
+            db.Pet.findOne(
+                {
+                    where: {
+                        id:req.params.id
+                    }
+                })
+                .then(function(foundPet) {
+                return foundPet.update({happy: parseInt(foundPet.happy)+1})
+                })
+                .then(function(result) {
+                console.log("results: ", result)
+                });
+            // update the lastPlayed time
             db.Pet.update({
                 lastPlayed: moment().format()
             },
@@ -122,14 +144,20 @@ var moment = require("moment");
                 .then (function (result){
                     res.end()
                 }); 
-
-                if (req.body.hungry=0){
-                    db.Pet.increment('hp',
-                    {
-                        where: {
-                            id: req.params.id
-                        }
-                    });
+            // update hp if happy is 0
+                if (req.body.happy=0){
+                    db.Pet.findOne(
+                        {
+                            where: {
+                                id:req.params.id
+                            }
+                        })
+                        .then(function(foundPet) {
+                        return foundPet.update({hp: parseInt(foundPet.hp)+1})
+                        })
+                        .then(function(result) {
+                        console.log("results: ", result)
+                        });
                 }
 
             break;  
@@ -137,11 +165,20 @@ var moment = require("moment");
         // if Sleep is sent then update sleepy and lastSlept to the current time
         case "Sleep": 
             console.log("run sleep!!!")
-            db.Pet.increment('sleepy',
-            { where: {
-                id:req.params.id
-                }
-            });
+            // increment Sleepy by one
+            db.Pet.findOne(
+                {
+                    where: {
+                        id:req.params.id
+                    }
+                })
+                .then(function(foundPet) {
+                return foundPet.update({sleepy: parseInt(foundPet.sleepy)+1})
+                })
+                .then(function(result) {
+                console.log("results: ", result)
+                });
+            // update the lastSlept time
             db.Pet.update({
                 lastSlept: moment().format()
             },
@@ -154,13 +191,20 @@ var moment = require("moment");
                     res.end()                
                 });  
 
-                if (req.body.hungry=0){
-                    db.Pet.increment('hp',
-                    {
-                        where: {
-                            id: req.params.id
-                        }
-                    });
+            // increment hp if sleepy is 0
+                if (req.body.sleepy=0){
+                    db.Pet.findOne(
+                        {
+                            where: {
+                                id:req.params.id
+                            }
+                        })
+                        .then(function(foundPet) {
+                        return foundPet.update({hp: parseInt(foundPet.hp)+1})
+                        })
+                        .then(function(result) {
+                        console.log("results: ", result)
+                        });
                 }
                 
             break; 
