@@ -9,16 +9,20 @@ module.exports = function(app) {
         });
     });
 
-    app.get("/api/users/:id", function(req,res){
+    app.get("/api/user/:name", function(req,res){
+        console.log("======================================")
+        console.log(req.params.name)
+        console.log("======================================")
         db.User.findOne({
             where: {
-                id: req.params.id
+                name: req.params.name
             },
 
-            include: [{model:db.User}]
+            include: [{model:db.Pet}]
 
         }).then(function(dbUser){
             res.json(dbUser);
+            console.log(dbUser)
         });
     });
 
