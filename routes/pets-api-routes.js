@@ -24,8 +24,6 @@ module.exports = function(app) {
             res.json(dbPets);
         });
     });
-
-
     //post a new pet
     app.post("/api/newpet", function(req, res){
         db.Pet.create(req.body)
@@ -33,31 +31,144 @@ module.exports = function(app) {
             res.json(result);
         });
     });
-
+    //udpates the pet information based on time
     app.put("/api/p/", function(req, res){
-        console.log("The put route for all");
-        console.log("the req.body: ", req.body);
-        for(let i in req.body.pets){
-            db.Pet.update({
-                alive: req.body.pets[i].alive,
-                hp: req.body.pets[i].hp,
-                hungry: req.body.pets[i].hungry,
-                sleepy: req.body.pets[i].sleepy,
-                happy: req.body.pets[i].happy,
-                lastFed: req.body.pets[i].lastFed,
-                lastSlept: req.body.pets[i].lastSlept,
-                lastPlayed: req.body.pets[i].lastPlayed
-            },
-            {
-                where: {
-                    id: req.body.pets[i].id
-                }
-            })
-            .then (function (dbPets){
-                console.log("finished");
-            });
+        db.Pet.findAll({})
+        .then(function(foundPets) {
+            return timeUpdate(foundPets)
+        })
+        .then(function(results) {
+            for(let j in results){
+                db.Pet.update({
+                    alive: results[j].alive,
+                    hp: results[j].hp,
+                    hungry: results[j].hungry,
+                    sleepy: results[j].sleepy,
+                    happy: results[j].happy,
+                    lastFed: results[j].lastFed,
+                    lastSlept: results[j].lastSlept,
+                    lastPlayed: results[j].lastPlayed
+                },
+                {
+                    where: {
+                        id: results[j].id
+                    }
+                })
+            }
+            console.log("results: ", results)
+        })
+         //function that updates the pet information based off time
+    function timeUpdate(dbData) {
+        let petArray = [];
+        for (let i in dbData) {
+            let momDifFed = parseFloat(moment().diff(dbData[i].dataValues.lastFed, 'minutes', true));
+            let momDifSlept = parseFloat(moment().diff(dbData[i].dataValues.lastSlept, 'minutes', true));
+            let momDifPlayed = parseFloat(moment().diff(dbData[i].dataValues.lastPlayed, 'minutes', true));
+            // =================================================================================
+            //if 10 minutes have passed, subtract 5 from hungry
+            if (momDifFed >= 10) {
+                //update [dbData[i]].hungry
+                dbData[i].dataValues.hungry -= 5;
+                dbData[i].dataValues.lastFed = moment().format()
+            }
+            //if 8 minutes have passed, subtract 4 from hungry/sleepy/play
+            //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
+            else if (momDifFed >= 8) {
+                dbData[i].dataValues.hungry -= 4;
+                dbData[i].dataValues.lastFed = moment().subtract(momDifFed - 8, 'minutes').format()
+            }
+            else if (momDifFed >= 6) {
+                dbData[i].dataValues.hungry -= 3;
+                dbData[i].dataValues.lastFed = moment().subtract(momDifFed - 6, 'minutes').format()
+            }
+            else if (momDifFed >= 4) {
+                dbData[i].dataValues.hungry -= 2;
+                dbData[i].dataValues.lastFed = moment().subtract(momDifFed - 4, 'minutes').format()
+            }
+            else if (momDifFed >= 2) {
+                dbData[i].dataValues.hungry -= 1;
+                dbData[i].dataValues.lastFed = moment().subtract(momDifFed - 2, 'minutes').format()
+            };
+            // =================================================================================
+            //if 10 minutes have passed, subtract 5 from sleepy
+            if (momDifSlept >= 10) {
+                //update [dbData[i]].hungry
+                dbData[i].dataValues.sleepy -= 5;
+            }
+            //if 8 minutes have passed, subtract 4 from hungry/sleepy/play
+            //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
+            else if (momDifSlept >= 8) {
+                dbData[i].dataValues.sleepy -= 4;
+                dbData[i].dataValues.lastSlept = moment().subtract(momDifSlept - 8, 'minutes').format()
+            }
+            else if (momDifSlept >= 6) {
+                dbData[i].dataValues.sleepy -= 3;
+                dbData[i].dataValues.lastSlept = moment().subtract(momDifSlept - 6, 'minutes').format()
+            }
+            else if (momDifSlept >= 4) {
+                dbData[i].dataValues.sleepy -= 2;
+                dbData[i].dataValues.lastSlept = moment().subtract(momDifSlept - 4, 'minutes').format()
+            }
+            else if (momDifSlept >= 2) {
+                dbData[i].dataValues.sleepy -= 1;
+                dbData[i].dataValues.lastSlept = moment().subtract(momDifSlept - 2, 'minutes').format()
+            };
+            // =================================================================================
+            //if 10 minutes have passed, subtract 5 from happy
+            if (momDifPlayed >= 10) {
+                //update [dbData[i]].hungry
+                dbData[i].dataValues.happy -= 5;
+            }
+            //if 8 minutes have passed, subtract 4 from hungry/sleepy/play
+            //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
+            else if (momDifPlayed >= 8) {
+                dbData[i].dataValues.happy -= 4;
+                dbData[i].dataValues.lastPlayed = moment().subtract(momDifPlayed - 8, 'minutes').format()
+            }
+            else if (momDifPlayed >= 6) {
+                dbData[i].happy -= 3;
+                dbData[i].lastPlayed = moment().subtract(momDifPlayed - 6, 'minutes').format()
+            }
+            else if (momDifPlayed >= 4) {
+                dbData[i].dataValues.happy -= 2;
+                dbData[i].dataValues.lastPlayed = moment().subtract(momDifPlayed - 4, 'minutes').format()
+            }
+            else if (momDifPlayed >= 2) {
+                dbData[i].dataValues.happy -= 1;
+                dbData[i].dataValues.lastPlayed = moment().subtract(momDifPlayed - 2, 'minutes').format()
+            };
+            // =================================================================================
+            //set statuses to zero if below zero
+            if (dbData[i].dataValues.hungry < 0) {
+                dbData[i].dataValues.hungry = 0;
+            }
+            if (dbData[i].dataValues.sleepy <= 0) {
+                dbData[i].dataValues.sleepy = 0;
+            }
+            if (dbData[i].dataValues.happy < 0) {
+                dbData[i].dataValues.happy = 0;
+            }
+            if (dbData[i].dataValues.hungry === 0 && dbData[i].dataValues.sleepy === 0 && dbData[i].dataValues.happy === 0) {
+                dbData[i].dataValues.hp = 0;
+                dbData[i].dataValues.alive = 0
+            }
+            else if (dbData[i].dataValues.hungry === 0 && dbData[i].dataValues.sleepy === 0 || dbData[i].dataValues.sleepy === 0 && dbData[i].dataValues.happy === 0 || dbData[i].dataValues.hungry === 0 && dbData[i].dataValues.happy === 0) {
+                dbData[i].dataValues.hp = 1
+            }
+            else if (dbData[i].dataValues.hungry === 0 || dbData[i].dataValues.sleepy === 0 || dbData[i].dataValues.happy === 0) {
+                dbData[i].dataValues.hp = 2
+            }
+            else {
+                dbData[i].dataValues.hp = 3;
+            }
+        petArray.push(dbData[i].dataValues)
+    
         }
+        console.log("Ran timeupdate")
+        return petArray
+    };
     });
+   
     // update the columns depending on what was sent
     app.put("/api/pets/:id", function(req, res){
         
