@@ -60,12 +60,6 @@ app.use(protectedRoutes);
 // Syncing our sequelize models and then starting our Express app
 // =============================================================
 db.sequelize.sync()
-  .then(function(){
-    return db.User.create({
-        name: "yuwen",
-        password: "happy1234"
-    })
-  })
   .then(function() {
     app.listen(PORT, function() {
       console.log("App listening on PORT " + PORT);
