@@ -87,6 +87,15 @@ module.exports = function(app) {
                 .then (function (result){
                     res.end()
                 });
+            
+            if (req.body.hungry=0){
+                db.Pet.increment('hp',
+                {
+                    where: {
+                        id: req.params.id
+                    }
+                });
+            }
             break;
         
         // if Play is sent then update happy and lastPlayed to the current time
@@ -108,6 +117,16 @@ module.exports = function(app) {
                 .then (function (result){
                     res.end()
                 }); 
+
+                if (req.body.hungry=0){
+                    db.Pet.increment('hp',
+                    {
+                        where: {
+                            id: req.params.id
+                        }
+                    });
+                }
+
             break;  
         
         // if Sleep is sent then update sleepy and lastSlept to the current time
@@ -129,6 +148,16 @@ module.exports = function(app) {
                 .then (function (result){
                     res.end()                
                 });  
+
+                if (req.body.hungry=0){
+                    db.Pet.increment('hp',
+                    {
+                        where: {
+                            id: req.params.id
+                        }
+                    });
+                }
+                
             break; 
        
         // if Kill is sent then update all status to 0
