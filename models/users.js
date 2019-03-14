@@ -8,9 +8,9 @@ module.exports = function(sequelize, DataTypes) {
       },
       password: {
         type: DataTypes.STRING,
-        validate:{
-            len: [8, 24],
-        },
+        // validate:{
+        //     len: [8, 24],
+        // },
       },
   
     });

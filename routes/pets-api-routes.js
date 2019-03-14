@@ -1,11 +1,15 @@
+//dependencies
+var express = require("express");
+const router = express.Router()
 var db = require("../models");
 var moment = require("moment");
 
 
-module.exports = function(app) {
+
+// module.exports = function(app) {
     //get all pets
     //get a specific pet info
-    app.get("/api/pets/", function(req,res){
+    router.get("/api/pets/", function(req,res){
         db.Pet.findAll({
             include: [{model: db.User}],
         })
@@ -13,7 +17,7 @@ module.exports = function(app) {
             res.json(dbPets);
         });
     });
-    app.get("/api/pet/:id", function(req,res){
+    router.get("/api/pet/:id", function(req,res){
         db.Pet.findOne({
             include: [{model: db.User}],
             where:{
@@ -26,15 +30,16 @@ module.exports = function(app) {
     });
 
 
-    //post a new pet
-    app.post("/api/newpet", function(req, res){
-        db.Pet.create(req.body)
-        .then (function (result){
-            res.json(result);
-        });
-    });
+    // // post a new pet
+    // router.post("/api/newpet", function(req, res){
+    //     db.Pet.create(req.body)
+    //     .then (function (result){
+    //         res.json(result);
+    //     });
+    // });
 
-    app.put("/api/p/", function(req, res){
+    // update the columns when reload
+    router.put("/api/p/", function(req, res){
         console.log("The put route for all");
         console.log("the req.body: ", req.body);
         for(let i in req.body.pets){
@@ -60,7 +65,7 @@ module.exports = function(app) {
         }
     });
     // update the columns depending on what was sent
-    app.put("/api/pets/:id", function(req, res){
+    router.put("/api/pets/:id", function(req, res){
         
         var action = req.body.action;
         console.log(action)
@@ -204,4 +209,7 @@ module.exports = function(app) {
     }
     
     });
-};
+// };
+
+//export router
+module.exports = router
