@@ -46,13 +46,11 @@ $(document).ready(function () {
             name: name,
             password: password
         }
-
+        // input validation
         if (name === "" || password === "") {
             // check if there is name and password input
             alert("Please enter a valid username and password!")
         } else {
-            console.log("==================GET====================")
-            console.log(reqestbody)
             // check if user already exists
             $.ajax({
                 url: "/api/user/" + name,
@@ -62,8 +60,6 @@ $(document).ready(function () {
                 console.log(data)
                 // if did not exist
                 if (data === null) {
-                    console.log("==================POST====================")
-                    console.log(reqestbody)
                     //POST: new user
                     $.ajax({
                         url: "/api/newuser",
@@ -74,6 +70,11 @@ $(document).ready(function () {
                     })
                     alert("Welcome, " + name + "!")
                     $('#signupModal').modal('toggle')
+                    // log in the user
+
+
+
+
 
                     // if exists
                 } else {
@@ -88,6 +89,7 @@ $(document).ready(function () {
         e.preventDefault()
         let name = $.trim($("#lg_username").val())
         let password = $("#lg_password").val()
+        // input validation
         if (name === "" || password === "") {
             alert("Please enter a valid username and password!")
         } else {
@@ -103,7 +105,7 @@ $(document).ready(function () {
                     alert("User does not exist. Please sign up first")
                 // if exists
                 } else {
-                    //check the password
+                    //check the password (authentication)
                     if(password !== data.password){
                         //not match
                         alert("The username or password you entered is incorrect. Please try again or sign up!")
@@ -204,7 +206,7 @@ $(document).ready(function () {
             var sleepy = parseInt(data.sleepy) * 20
             var happy = parseInt(data.happy) * 20
             // change the texts and progress bars
-            $(".modal-title").html("<b>" + name + "</b> | Owner: " + username)
+            $(".petInfo-title").html("<b>" + name + "</b> | Owner: " + username)
             //if it is alive
             //show and update the info
             if (alive) {
@@ -312,94 +314,94 @@ $(document).ready(function () {
         $.get("/api/pets/", function (dbData) {
             let petA = [];
             for (let i in dbData) {
-                let momDifFed = parseFloat(moment().diff(dbData[i].lastFed, 'hours', true));
-                let momDifSlept = parseFloat(moment().diff(dbData[i].lastSlept, 'hours', true));
-                let momDifPlayed = parseFloat(moment().diff(dbData[i].lastPlayed, 'hours', true));
+                let momDifFed = parseFloat(moment().diff(dbData[i].lastFed, 'minutes', true));
+                let momDifSlept = parseFloat(moment().diff(dbData[i].lastSlept, 'minutes', true));
+                let momDifPlayed = parseFloat(moment().diff(dbData[i].lastPlayed, 'minutes', true));
                 // =================================================================================
-                //if 10 hours have passed, subtract 5 from hungry
+                //if 10 minutes have passed, subtract 5 from hungry
                 if (momDifFed >= 10) {
                     //update [dbData[i]].hungry
                     dbData[i].hungry -= 5;
                     dbData[i].lastFed = moment().format()
                 }
-                //if 8 hours have passed, subtract 4 from hungry/sleepy/play
+                //if 8 minutes have passed, subtract 4 from hungry/sleepy/play
                 //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
                 else if (momDifFed >= 8) {
                     dbData[i].hungry -= 4;
-                    dbData[i].lastFed = moment().subtract(momDifFed - 8, 'hours').format()
+                    dbData[i].lastFed = moment().subtract(momDifFed - 8, 'minutes').format()
                 }
                 else if (momDifFed >= 6) {
                     dbData[i].hungry -= 3;
-                    dbData[i].lastFed = moment().subtract(momDifFed - 6, 'hours').format()
+                    dbData[i].lastFed = moment().subtract(momDifFed - 6, 'minutes').format()
                 }
                 else if (momDifFed >= 4) {
                     dbData[i].hungry -= 2;
-                    dbData[i].lastFed = moment().subtract(momDifFed - 4, 'hours').format()
+                    dbData[i].lastFed = moment().subtract(momDifFed - 4, 'minutes').format()
                 }
                 else if (momDifFed >= 2) {
                     dbData[i].hungry -= 1;
-                    dbData[i].lastFed = moment().subtract(momDifFed - 2, 'hours').format()
+                    dbData[i].lastFed = moment().subtract(momDifFed - 2, 'minutes').format()
                 };
                 // =================================================================================
-                //if 10 hours have passed, subtract 5 from sleepy
+                //if 10 minutes have passed, subtract 5 from sleepy
                 if (momDifSlept >= 10) {
                     //update [dbData[i]].hungry
                     dbData[i].sleepy -= 5;
                 }
-                //if 8 hours have passed, subtract 4 from hungry/sleepy/play
+                //if 8 minutes have passed, subtract 4 from hungry/sleepy/play
                 //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
                 else if (momDifSlept >= 8) {
                     dbData[i].sleepy -= 4;
-                    dbData[i].lastSlept = moment().subtract(momDifSlept - 8, 'hours').format()
+                    dbData[i].lastSlept = moment().subtract(momDifSlept - 8, 'minutes').format()
                 }
                 else if (momDifSlept >= 6) {
                     dbData[i].sleepy -= 3;
-                    dbData[i].lastSlept = moment().subtract(momDifSlept - 6, 'hours').format()
+                    dbData[i].lastSlept = moment().subtract(momDifSlept - 6, 'minutes').format()
                 }
                 else if (momDifSlept >= 4) {
                     dbData[i].sleepy -= 2;
-                    dbData[i].lastSlept = moment().subtract(momDifSlept - 4, 'hours').format()
+                    dbData[i].lastSlept = moment().subtract(momDifSlept - 4, 'minutes').format()
                 }
                 else if (momDifSlept >= 2) {
                     dbData[i].sleepy -= 1;
-                    dbData[i].lastSlept = moment().subtract(momDifSlept - 2, 'hours').format()
+                    dbData[i].lastSlept = moment().subtract(momDifSlept - 2, 'minutes').format()
                 };
                 // =================================================================================
-                //if 10 hours have passed, subtract 5 from happy
+                //if 10 minutes have passed, subtract 5 from happy
                 if (momDifPlayed >= 10) {
                     //update [dbData[i]].hungry
                     dbData[i].happy -= 5;
                 }
-                //if 8 hours have passed, subtract 4 from hungry/sleepy/play
+                //if 8 minutes have passed, subtract 4 from hungry/sleepy/play
                 //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
                 else if (momDifPlayed >= 8) {
                     dbData[i].happy -= 4;
-                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 8, 'hours').format()
+                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 8, 'minutes').format()
                 }
                 else if (momDifPlayed >= 6) {
                     dbData[i].happy -= 3;
-                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 6, 'hours').format()
+                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 6, 'minutes').format()
                 }
                 else if (momDifPlayed >= 4) {
                     dbData[i].happy -= 2;
-                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 4, 'hours').format()
+                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 4, 'minutes').format()
                 }
                 else if (momDifPlayed >= 2) {
                     dbData[i].happy -= 1;
-                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 2, 'hours').format()
+                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 2, 'minutes').format()
                 };
                 // =================================================================================
                 //set statuses to zero if below zero
                 if (dbData[i].hungry < 0) {
                     dbData[i].hungry = 0;
-                    dbData[i].lastFed = moment().subtract(4, 'hours').format();
+                    dbData[i].lastFed = moment().subtract(4, 'minutes').format();
                     console.log("LAst played up: ", dbData[i].lastFed)
                 }
                 if (dbData[i].sleepy <= 0) {
                     dbData[i].sleepy = 0;
-                    dbData[i].lastPlayed = moment().subtract(2, 'hours').format();
+                    dbData[i].lastPlayed = moment().subtract(2, 'minutes').format();
                     console.log("LAst played up: ", dbData[i].lastPlayed);
-                    console.log("This moment minus 2: ", moment().subtract(5, 'hours').format())
+                    console.log("This moment minus 2: ", moment().subtract(5, 'minutes').format())
                 }
                 if (dbData[i].happy < 0) {
                     dbData[i].happy = 0;
@@ -439,6 +441,7 @@ $(document).ready(function () {
         }).then(function (result) {
             console.log("changes made!");
             //update the info
+            // location.reload()
         })
     };
 
