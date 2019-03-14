@@ -156,7 +156,16 @@ $(document).ready(function () {
             //here is a dummy data, change this when we figure out the authentication stuff
             UserId: "1"
         }
+        if (img == ""){
+            console.log("Need to select a pet")
+            $("#errorSelectPet").html("Please select a pet!")
+        }
+        else if (name == ""){
+            console.log("Need to select a name")
+            $("#errorSelectPet").html("Please name your pet!")
+        }
         // hit the POST request path
+        else {
         $.ajax({
             url: "/api/newpet",
             type: 'POST',
@@ -165,7 +174,8 @@ $(document).ready(function () {
             console.log("New Pet has been created")
             location.reload()
         })
-    })
+    }
+})
 
 
     // a function that displays pet options
