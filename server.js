@@ -1,3 +1,4 @@
+
 // *****************************************************************************
 // Server.js - This file is the initial starting point for the Node/Express server.
 //
@@ -6,6 +7,7 @@
 // =============================================================
 var express = require("express");
 var exphbs = require("express-handlebars");
+
 
 // Sets up the Express App
 // =============================================================
@@ -30,17 +32,42 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 
-// Routes
-// =============================================================
+
+// // Routes
+// // =============================================================
+// // require("./routes/html-routes.js")(app);
+// require("./routes/users-api-routes.js")(app);
+// require("./routes/pets-api-routes.js")(app);
 // require("./routes/html-routes.js")(app);
-require("./routes/users-api-routes.js")(app);
-require("./routes/pets-api-routes.js")(app);
-require("./routes/html-routes.js")(app);
+
+
+// Routes with router
+// // =============================================================
+
+// Import routes and give the server access to them.
+var petRoutes = require("./routes/pets-api-routes");
+var userRoutes = require("./routes/users-api-routes.js");
+var htmlRoutes = require("./routes/html-routes.js")
+var protectedRoutes = require("./routes/protected-routes")
+
+// use the routes
+app.use(petRoutes);
+app.use(userRoutes);
+app.use(htmlRoutes);
+app.use(protectedRoutes);
+
 
 // Syncing our sequelize models and then starting our Express app
 // =============================================================
-db.sequelize.sync().then(function() {
-  app.listen(PORT, function() {
-    console.log("App listening on PORT " + PORT);
-  });
+db.sequelize.sync()
+  .then(function(){
+    return db.User.create({
+        name: "yuwen",
+        password: "happy1234"
+    })
+  })
+  .then(function() {
+    app.listen(PORT, function() {
+      console.log("App listening on PORT " + PORT);
+    });
 });

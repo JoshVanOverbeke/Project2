@@ -1,11 +1,15 @@
+//dependencies
+var express = require("express");
+const router = express.Router()
 var db = require("../models");
 var moment = require("moment");
 
 
-module.exports = function(app) {
+
+// module.exports = function(app) {
     //get all pets
     //get a specific pet info
-    app.get("/api/pets/", function(req,res){
+    router.get("/api/pets/", function(req,res){
         db.Pet.findAll({
             include: [{model: db.User}],
         })
@@ -13,7 +17,7 @@ module.exports = function(app) {
             res.json(dbPets);
         });
     });
-    app.get("/api/pet/:id", function(req,res){
+    router.get("/api/pet/:id", function(req,res){
         db.Pet.findOne({
             include: [{model: db.User}],
             where:{
@@ -56,7 +60,10 @@ module.exports = function(app) {
                 })
             }
             console.log("results: ", results)
-        })
+        }).then (function (result){
+            console.log("finished");
+            res.json(result)
+        });
          //function that updates the pet information based off time
     function timeUpdate(dbData) {
         let petArray = [];
@@ -170,21 +177,28 @@ module.exports = function(app) {
     });
    
     // update the columns depending on what was sent
-    app.put("/api/pets/:id", function(req, res){
+    router.put("/api/pets/:id", function(req, res){
         
         var action = req.body.action;
         console.log(action)
+        var actionKey;
         switch (action){
         // if Feed is sent then update hungry and lastFed to the current time
         case "Feed":
-            console.log("run feed!!!")
-            console.log(moment().format())
-            // let now = date("Y-m-d H:i:s", moment().format());
-            db.Pet.increment('hungry',
-            { where: {
-                id: req.params.id
-                }
-            });
+        // increment hungry by one
+            db.Pet.findOne(
+                {
+                    where: {
+                        id:req.params.id
+                    }
+                })
+                .then(function(foundPet) {
+                return foundPet.update({hungry: parseInt(foundPet.hungry)+1})
+                })
+                .then(function(result) {
+                console.log("results: ", result)
+                });
+            // update the lastFed time
             db.Pet.update({
 
                 lastFed: moment().format()
@@ -197,16 +211,40 @@ module.exports = function(app) {
                 .then (function (result){
                     res.end()
                 });
+        // if hungry is at zero then increase hp by one
+            if (req.body.hungry=0){
+                db.Pet.findOne(
+                    {
+                        where: {
+                            id:req.params.id
+                        }
+                    })
+                    .then(function(foundPet) {
+                    return foundPet.update({hp: parseInt(foundPet.hp)+1})
+                    })
+                    .then(function(result) {
+                    console.log("results: ", result)
+                    });
+            }
             break;
         
         // if Play is sent then update happy and lastPlayed to the current time
         case "Play": 
             console.log("run play!!!")
-            db.Pet.increment('happy',
-            { where: {
-                id:req.params.id
-                }
-            });
+            // increment happy by one
+            db.Pet.findOne(
+                {
+                    where: {
+                        id:req.params.id
+                    }
+                })
+                .then(function(foundPet) {
+                return foundPet.update({happy: parseInt(foundPet.happy)+1})
+                })
+                .then(function(result) {
+                console.log("results: ", result)
+                });
+            // update the lastPlayed time
             db.Pet.update({
                 lastPlayed: moment().format()
             },
@@ -218,16 +256,41 @@ module.exports = function(app) {
                 .then (function (result){
                     res.end()
                 }); 
+            // update hp if happy is 0
+                if (req.body.happy=0){
+                    db.Pet.findOne(
+                        {
+                            where: {
+                                id:req.params.id
+                            }
+                        })
+                        .then(function(foundPet) {
+                        return foundPet.update({hp: parseInt(foundPet.hp)+1})
+                        })
+                        .then(function(result) {
+                        console.log("results: ", result)
+                        });
+                }
+
             break;  
         
         // if Sleep is sent then update sleepy and lastSlept to the current time
         case "Sleep": 
             console.log("run sleep!!!")
-            db.Pet.increment('sleepy',
-            { where: {
-                id:req.params.id
-                }
-            });
+            // increment Sleepy by one
+            db.Pet.findOne(
+                {
+                    where: {
+                        id:req.params.id
+                    }
+                })
+                .then(function(foundPet) {
+                return foundPet.update({sleepy: parseInt(foundPet.sleepy)+1})
+                })
+                .then(function(result) {
+                console.log("results: ", result)
+                });
+            // update the lastSlept time
             db.Pet.update({
                 lastSlept: moment().format()
             },
@@ -239,6 +302,23 @@ module.exports = function(app) {
                 .then (function (result){
                     res.end()                
                 });  
+
+            // increment hp if sleepy is 0
+                if (req.body.sleepy=0){
+                    db.Pet.findOne(
+                        {
+                            where: {
+                                id:req.params.id
+                            }
+                        })
+                        .then(function(foundPet) {
+                        return foundPet.update({hp: parseInt(foundPet.hp)+1})
+                        })
+                        .then(function(result) {
+                        console.log("results: ", result)
+                        });
+                }
+                
             break; 
        
         // if Kill is sent then update all status to 0
@@ -285,4 +365,7 @@ module.exports = function(app) {
     }
     
     });
-};
+// };
+
+//export router
+module.exports = router

@@ -44,10 +44,50 @@ $(document).ready(function () {
     reloadUpdate()
 
 
+    //{
+    //     user: userDetails,
+    //     token: token,
+    // }
+    //clickhandlers for log in button model
+    $("#loginBtn").on("click", function (e) {
+        e.preventDefault()
+        let name = $.trim($("#lg_username").val())
+        console.log("username is :" + name)
+        let password = $("#lg_password").val()
+        var reqestbody = {
+            name: name,
+            password: password
+        }
+        // token POST request
+        $.ajax({
+            url: "/token",
+            data: reqestbody,
+            method: "POST"
+        })
+            .then(function (response) {
+                console.log("Got Data:", response);
+                // call the function to attach token in ajex request
+                attachToken(response.token);
+                // close the modal;
+                // $('#loginBtn').modal('toggle')
+                alert("Welcome, " + name + "!")
+                //erro shooting
+
+
+
+
+
+                $("#logoutBtn").css("display", "inline")
+                $("#loginModalBtn").attr("style", "display:none!important")
+                $("#signinModalBtn").attr("style", "display:none!important")
+                $('#loginModal').modal('toggle')
+            })
+    })
 
     //clickhandlers for sign up button model
     $("#signupBtn").on("click", function (e) {
         e.preventDefault()
+
         let name = $.trim($("#su_username").val())
         console.log("username is :" + name)
         let password = $("#su_password").val()
@@ -55,13 +95,11 @@ $(document).ready(function () {
             name: name,
             password: password
         }
-
+        // input validation
         if (name === "" || password === "") {
             // check if there is name and password input
             alert("Please enter a valid username and password!")
         } else {
-            console.log("==================GET====================")
-            console.log(reqestbody)
             // check if user already exists
             $.ajax({
                 url: "/api/user/" + name,
@@ -71,8 +109,6 @@ $(document).ready(function () {
                 console.log(data)
                 // if did not exist
                 if (data === null) {
-                    console.log("==================POST====================")
-                    console.log(reqestbody)
                     //POST: new user
                     $.ajax({
                         url: "/api/newuser",
@@ -80,51 +116,69 @@ $(document).ready(function () {
                         data: reqestbody,
                     }).then(function (result) {
                         console.log("Add a new user!")
+                        // log in the user
+                        // token POST request
+                        $.ajax({
+                            url: "/token",
+                            data: reqestbody,
+                            method: "POST"
+                        })
+                            .then(function (response) {
+                                console.log("Got Data:", response);
+                                // call the function to attach token in ajex request
+                                attachToken(response.token);
+                                // testTokenAttached();
+                                alert("Welcome, " + response.user.name + "!")
+                            })
                     })
-                    alert("Welcome, " + name + "!")
                     $('#signupModal').modal('toggle')
-
                     // if exists
                 } else {
                     alert("User already exists! Please use another name!")
                 }
             })
         }
+        // let name = $.trim($("#lg_username").val())
+        // let password = $("#lg_password").val()
+        // // input validation
+        // if (name === "" || password === "") {
+        //     alert("Please enter a valid username and password!")
+        // } else {
+        //     // check if user already exists
+        //     $.ajax({
+        //         url: "/api/user/" + name,
+        //         type: 'GET',
+        //         // data: reqestbody,
+        //     }).then(function (data) {
+        //         console.log(data)
+        //         // if did not exist
+        //         if (data === null) {
+        //             alert("User does not exist. Please sign up first")
+        //             // if exists
+        //         } else {
+        //             //check the password (authentication)
+        //             if (password !== data.password) {
+        //                 //not match
+        //                 alert("The username or password you entered is incorrect. Please try again or sign up!")
+        //             } else {
+        //                 //match 
+        //                 alert("Welcome, " + name + "!")
+        //                 $('#loginModal').modal('toggle')
+        //             }
+        //         }
+        //     })
+
+        // }
     })
 
-    //clickhandlers for login button model
-    $("#loginBtn").on("click", function (e) {
-        e.preventDefault()
-        let name = $.trim($("#lg_username").val())
-        let password = $("#lg_password").val()
-        if (name === "" || password === "") {
-            alert("Please enter a valid username and password!")
-        } else {
-            // check if user already exists
-            $.ajax({
-                url: "/api/user/" + name,
-                type: 'GET',
-                // data: reqestbody,
-            }).then(function (data) {
-                console.log(data)
-                // if did not exist
-                if (data === null) {
-                    alert("User does not exist. Please sign up first")
-                // if exists
-                } else {
-                    //check the password
-                    if(password !== data.password){
-                        //not match
-                        alert("The username or password you entered is incorrect. Please try again or sign up!")
-                    }else{
-                        //match 
-                        alert("Welcome, " + name + "!")
-                        $('#loginModal').modal('toggle')
-                    }
-                }
-            })
+    // clickhandler for sign out btn
 
-        }
+    $("#logoutBtn").on("click",function(e){
+        localStorage.removeItem("token")
+        $("#logoutBtn").css("display", "none")
+        $("#loginModalBtn").attr("style", "display:inline!important")
+        $("#signinModalBtn").attr("style", "display:inline!important")
+        attachToken()
     })
 
 
@@ -160,10 +214,17 @@ $(document).ready(function () {
         let requestBody = {
             name: name,
             img: img,
-            //here is a dummy data, change this when we figure out the authentication stuff
-            UserId: "1"
+        }
+        if (img == ""){
+            console.log("Need to select a pet")
+            $("#errorSelectPet").html("Please select a pet!")
+        }
+        else if (name == ""){
+            console.log("Need to select a name")
+            $("#errorSelectPet").html("Please name your pet!")
         }
         // hit the POST request path
+        else {
         $.ajax({
             url: "/api/newpet",
             type: 'POST',
@@ -171,8 +232,10 @@ $(document).ready(function () {
         }).then(function (result) {
             console.log("New Pet has been created")
             location.reload()
+            attachToken();
         })
-    })
+    }
+})
 
 
     // a function that displays pet options
@@ -213,7 +276,7 @@ $(document).ready(function () {
             var sleepy = parseInt(data.sleepy) * 20
             var happy = parseInt(data.happy) * 20
             // change the texts and progress bars
-            $(".modal-title").html("<b>" + name + "</b> | Owner: " + username)
+            $(".petInfo-title").html("<b>" + name + "</b> | Owner: " + username)
             //if it is alive
             //show and update the info
             if (alive) {
@@ -266,6 +329,7 @@ $(document).ready(function () {
             console.log("changes made!");
             if (action === "Kill") {
                 location.reload()
+                attachToken();
             } else {
                 // update the progress bar
                 showPetInfo(id);
@@ -304,6 +368,7 @@ $(document).ready(function () {
             }).then(function (result) {
                 console.log("The pet is resurrected!");
                 location.reload()
+                attachToken();
             })
         }, 1200)
     })
@@ -392,3 +457,23 @@ $(document).ready(function () {
     }
 
 })
+
+
+
+// IF you "attach" the token to every request, 
+// then you don't have to set the Authorization header every time you make a request
+function attachToken(token) {
+    if (token) {
+        // save the token in localstorage
+        localStorage.setItem("token", token)
+    }
+
+    //the attachToken function adds the token to EVERY ajax request
+    $.ajaxSetup({
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("token")
+        }
+    });
+}
+
+attachToken()

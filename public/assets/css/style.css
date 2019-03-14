@@ -114,3 +114,15 @@ button{
     position: absolute;
     top: -100px
 }
+
+<<<<<<< HEAD
+#logoutBtn{
+    display: none;
+}
+=======
+#errorSelectPet{
+    color: red;
+    font-size: 18px; 
+    font-family: 'Roboto Condensed', sans-serif;
+}
+>>>>>>> master
