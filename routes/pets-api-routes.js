@@ -28,15 +28,8 @@ var moment = require("moment");
             res.json(dbPets);
         });
     });
-    //post a new pet
-    app.post("/api/newpet", function(req, res){
-        db.Pet.create(req.body)
-        .then (function (result){
-            res.json(result);
-        });
-    });
     //udpates the pet information based on time
-    app.put("/api/p/", function(req, res){
+    router.put("/api/p/", function(req, res){
         db.Pet.findAll({})
         .then(function(foundPets) {
             return timeUpdate(foundPets)
