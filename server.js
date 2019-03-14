@@ -1,6 +1,6 @@
-// // Test
-// const JWT_SECRET_KEY            = require('./config/jwt').JWT_SECRET_KEY
-// const TEST_USER                 = require('./config/jwt').TEST_USER
+// Test
+const JWT_SECRET_KEY            = require('./config/jwt').JWT_SECRET_KEY
+const TEST_USER                 = require('./config/jwt').TEST_USER
 // *****************************************************************************
 // Server.js - This file is the initial starting point for the Node/Express server.
 //
@@ -36,7 +36,7 @@ app.set("view engine", "handlebars");
 
 
 //tell express to use JSON WebTokens. JWT-Express will autofill req.user with the user details
-// app.use(jwt_express({ secret: JWT_SECRET_KEY}).unless({path: ['/token', '/favicon.ico']}));
+app.use(jwt_express({ secret: JWT_SECRET_KEY}).unless({path: ['/token', '/favicon.ico']}));
 
 // Routes
 // =============================================================
@@ -48,12 +48,12 @@ require("./routes/html-routes.js")(app);
 // Syncing our sequelize models and then starting our Express app
 // =============================================================
 db.sequelize.sync()
-  // .then(function(){
-  //   return db.User.create({
-  //       username: TEST_USER.username,
-  //       password: TEST_USER.password
-  //   })
-  // })
+  .then(function(){
+    return db.User.create({
+        username: TEST_USER.username,
+        password: TEST_USER.password
+    })
+  })
   .then(function() {
     app.listen(PORT, function() {
       console.log("App listening on PORT " + PORT);

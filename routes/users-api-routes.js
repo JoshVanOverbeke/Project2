@@ -1,4 +1,9 @@
+// Dependencies
 var db = require("../models");
+const jwt           = require('jsonwebtoken');
+
+// this is just a fancy way of making 3 variables. 
+const {JWT_OPTIONS, JWT_SECRET_KEY, TEST_USER} = require('../config/jwt')
 
 module.exports = function(app) {
     app.post("/api/newuser", function(req,res){
@@ -24,6 +29,48 @@ module.exports = function(app) {
             res.json(dbUser);
             console.log(dbUser)
         });
+    });
+
+    app.post('/token', function(req,res) {
+        //Fetch the user from the database:
+        db.User.findOne({
+            where: {
+                username: req.body.name,
+            }
+        })
+            .then(function(data) {
+                if (!data) return res.sendStatus(404).send(); //user wasn't found in the database, send a 404
+    
+    
+    
+                // do some sort of check that the user/password is correct:
+                //in this case, we just have a password to check against. This is bad security. 
+                // for better security, use something like bcrypt
+                else if ( data.password === req.body.password) {
+                    const userDetails = {
+                        username: data.username,
+                        id: data.id,
+                        created_at: data.created_at
+                    };
+                    return jwt.sign(userDetails, JWT_SECRET_KEY, JWT_OPTIONS, 
+                        function(err, token) {
+                            if (err) return res.sendStatus(500).json(err) //do some error checking
+                            res.json({
+                                user: userDetails,
+                                token: token,
+                            })
+                
+                        })
+                }
+                else {
+                    res.sendStatus(401).send(); //password incorrect, send a 401 [Unauthorized]
+                }
+            })
+            .catch(function(err) {
+                return res.sendStatus(500).json(err) 
+            })
+    
+    
     });
 
     app.delete("/api/users/:id",function(req, res){

@@ -35,7 +35,10 @@ $(document).ready(function () {
     console.log(moment().format())
 
 
-
+    //{
+    //     user: userDetails,
+    //     token: token,
+    // }
     //clickhandlers for sign up button model
     $("#signupBtn").on("click", function (e) {
         e.preventDefault()
@@ -46,43 +49,71 @@ $(document).ready(function () {
             name: name,
             password: password
         }
-        // input validation
-        if (name === "" || password === "") {
-            // check if there is name and password input
-            alert("Please enter a valid username and password!")
-        } else {
-            // check if user already exists
-            $.ajax({
-                url: "/api/user/" + name,
-                type: 'GET',
-                // data: reqestbody,
-            }).then(function (data) {
-                console.log(data)
-                // if did not exist
-                if (data === null) {
-                    //POST: new user
-                    $.ajax({
-                        url: "/api/newuser",
-                        type: 'POST',
-                        data: reqestbody,
-                    }).then(function (result) {
-                        console.log("Add a new user!")
-                    })
-                    alert("Welcome, " + name + "!")
-                    $('#signupModal').modal('toggle')
-                    // log in the user
-
-
-
-
-
-                    // if exists
-                } else {
-                    alert("User already exists! Please use another name!")
-                }
+        // token POST request
+        $.ajax({
+            url: "/token",
+            data: reqestbody,
+            method: "post"
+        })
+            .then(function (response) {
+                console.warn("Got Data:", response);
+                // $("#jwt-token").text(response.token);
+                // testToken(response.token);
+                // call the function to attach token in ajex request
+                attachToken(response.token);
+                // testTokenAttached();
             })
-        }
+
+        // // input validation
+        // if (name === "" || password === "") {
+        //     // check if there is name and password input
+        //     alert("Please enter a valid username and password!")
+        // } else {
+        //     // check if user already exists
+        //     $.ajax({
+        //         url: "/api/user/" + name,
+        //         type: 'GET',
+        //         // data: reqestbody,
+        //     }).then(function (data) {
+        //         console.log(data)
+        //         // if did not exist
+        //         if (data === null) {
+        //             //POST: new user
+        //             $.ajax({
+        //                 url: "/api/newuser",
+        //                 type: 'POST',
+        //                 data: reqestbody,
+        //             }).then(function (result) {
+        //                 console.log("Add a new user!")
+        //             })
+        //             alert("Welcome, " + name + "!")
+        //             $('#signupModal').modal('toggle')
+        //             // log in the user
+
+
+
+
+
+        //             // if exists
+        //         } else {
+        //             alert("User already exists! Please use another name!")
+        //         }
+        //     })
+        // }
     })
+
+
+
+    // IF you "attach" the token to every request, 
+    // then you don't have to set the Authorization header every time you make a request
+    function attachToken(token) {
+        //the attachToken function adds the token to EVERY ajax request
+        $.ajaxSetup({
+            headers: {
+                Authorization: "Bearer " + token
+            }
+        });
+    }
 
     //clickhandlers for login button model
     $("#loginBtn").on("click", function (e) {
@@ -103,13 +134,13 @@ $(document).ready(function () {
                 // if did not exist
                 if (data === null) {
                     alert("User does not exist. Please sign up first")
-                // if exists
+                    // if exists
                 } else {
                     //check the password (authentication)
-                    if(password !== data.password){
+                    if (password !== data.password) {
                         //not match
                         alert("The username or password you entered is incorrect. Please try again or sign up!")
-                    }else{
+                    } else {
                         //match 
                         alert("Welcome, " + name + "!")
                         $('#loginModal').modal('toggle')
