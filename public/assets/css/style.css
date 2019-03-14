@@ -114,3 +114,9 @@ button{
     position: absolute;
     top: -100px
 }
+
+#errorSelectPet{
+    color: red;
+    font-size: 18px; 
+    font-family: 'Roboto Condensed', sans-serif;
+}
