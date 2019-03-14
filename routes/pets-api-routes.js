@@ -60,23 +60,7 @@ module.exports = function(app) {
     });
     // update the columns depending on what was sent
     app.put("/api/pets/:id", function(req, res){
-        // if the hp and alive is sent then update that
-        // if (req.body.hp && req.body.alive){
-        //     db.Pet.update({
-        //         hp: req.body.hp,
-        //         alive: req.body.alive
-        //     },
-        //         {
-        //             where: {
-        //                 id: req.params.id
-        //             }
-        //         })
-        //         .then (function (dbPets){
-        //             res.json(dbPets);
-        //         });
-        // }
-        console.log("run!!!")
-        console.log("req.body of one pet", req.body)
+        
         var action = req.body.action;
         console.log(action)
         switch (action){
@@ -100,7 +84,6 @@ module.exports = function(app) {
                     }
                 })
                 .then (function (result){
-                    console.log("Affected Row: " + result.affectedRows)
                     res.end()
                 });
             break;
@@ -122,7 +105,6 @@ module.exports = function(app) {
                     }
                 })
                 .then (function (result){
-                    console.log("Affected Row: " + result.affectedRows)
                     res.end()
                 }); 
             break;  
@@ -144,7 +126,6 @@ module.exports = function(app) {
                     }
                 })
                 .then (function (result){
-                    console.log("Affected Row: " + result.affectedRows)
                     res.end()                
                 });  
             break; 
@@ -156,7 +137,8 @@ module.exports = function(app) {
                 alive: 0,
                 sleepy: 0,
                 hungry: 0,
-                happy: 0
+                happy: 0,
+                hp: 0
             },
                 {
                     where: {
@@ -164,7 +146,28 @@ module.exports = function(app) {
                     }
                 })
                 .then (function (result){
-                    console.log("Affected Row: " + result.affectedRows)
+                    res.end()                
+                });
+            break;
+
+        case "Resurrect": 
+            console.log("==========================run resurrect!!!=========================")
+            db.Pet.update({
+                alive: 1,
+                sleepy: 5,
+                lastSlept: moment().format(),
+                hungry: 5,
+                lastFed: moment().format(),
+                happy: 5,
+                lastPlayed: moment().format(),
+                hp: 3
+            },
+                {
+                    where: {
+                        id: req.params.id
+                    }
+                })
+                .then (function (result){
                     res.end()                
                 });
             break;
