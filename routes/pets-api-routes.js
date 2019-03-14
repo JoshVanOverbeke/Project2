@@ -53,8 +53,9 @@ module.exports = function(app) {
                     id: req.body.pets[i].id
                 }
             })
-            .then (function (dbPets){
+            .then (function (result){
                 console.log("finished");
+                res.json(result)
             });
         }
     });
