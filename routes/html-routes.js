@@ -1,8 +1,11 @@
+//dependencies
+var express = require("express");
+const router = express.Router()
 var db = require("../models");
 
-module.exports = function(app) {
+// module.exports = function(app) {
     
-    app.get("/", function(req, res){
+    router.get("/", function(req, res){
         db.Pet.findAll({
             include: [{model: db.User}]
 
@@ -13,4 +16,8 @@ module.exports = function(app) {
 
     });
 
-}
+// }
+
+
+//export router
+module.exports = router
