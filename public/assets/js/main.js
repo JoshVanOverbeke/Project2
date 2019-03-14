@@ -530,5 +530,3 @@ $(document).ready(function () {
     }
 
 })
-
-

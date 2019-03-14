@@ -35,7 +35,7 @@ module.exports = function(app) {
     });
 
     app.put("/api/p/", function(req, res){
-        console.log("The put route");
+        console.log("The put route for all");
         console.log("the req.body: ", req.body);
         for(let i in req.body.pets){
             db.Pet.update({

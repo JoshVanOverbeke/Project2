@@ -20,14 +20,23 @@ module.exports = function (sequelize, DataTypes) {
     hungry: {
       type: DataTypes.INTEGER,
       defaultValue: 5,
+      validate:{
+        max: 5,
+    },
     },
     sleepy: {
       type: DataTypes.INTEGER,
       defaultValue: 5,
+      validate:{
+        max: 5,
+    },
     },
     happy: {
       type: DataTypes.INTEGER,
       defaultValue: 5,
+      validate:{
+        max: 5,
+    },
     },
     lastFed: {
       type: DataTypes.DATE,
