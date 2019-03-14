@@ -35,7 +35,7 @@ module.exports = function(app) {
     });
 
     app.put("/api/p/", function(req, res){
-        console.log("The put route");
+        console.log("The put route for all");
         console.log("the req.body: ", req.body);
         for(let i in req.body.pets){
             db.Pet.update({
@@ -53,8 +53,9 @@ module.exports = function(app) {
                     id: req.body.pets[i].id
                 }
             })
-            .then (function (dbPets){
+            .then (function (result){
                 console.log("finished");
+                res.json(result)
             });
         }
     });
@@ -180,7 +181,7 @@ module.exports = function(app) {
             break;
 
         case "Resurrect": 
-            console.log("run resurrect!!!")
+            console.log("==========================run resurrect!!!=========================")
             db.Pet.update({
                 alive: 1,
                 sleepy: 5,
