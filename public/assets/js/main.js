@@ -31,8 +31,17 @@ $(document).ready(function () {
         feed: "Yum, yum, yum....ԅ(¯﹃¯ԅ) ",
         die: "You didn't love me, so I am dead. QAQ"
     }
-    timeUpdate()
-    console.log(moment().format())
+
+    function reloadUpdate() {
+        $.ajax({
+            url: "/api/p/",
+            type: 'PUT',
+        }).then(function (result) {
+            console.log("changes made!");
+            location.reload()
+        })
+    };
+    reloadUpdate()
 
 
     //{
@@ -244,15 +253,15 @@ $(document).ready(function () {
 
     //clickhandlers for pets in the park for showing info
     $("article").on("click", function (e) {
-        e.preventDefault()
-        console.log("click")
-        // get the id from article data-id
-        var id = $(this).data("id");
-        console.log("Show the info of pet id: " + id)
-        // update the progress bar
-        showPetInfo(id);
-        // update the message:
-        messageGenerator.showStatusMessage(id);
+        e.preventDefault();
+            console.log("click")
+            // get the id from article data-id
+            var id = $(this).data("id");
+            console.log("Show the info of pet id: " + id)
+            // update the progress bar
+            showPetInfo(id);
+            // update the message:
+            messageGenerator.showStatusMessage(id);
     })
 
 
@@ -365,154 +374,6 @@ $(document).ready(function () {
             })
         }, 1200)
     })
-
-
-
-
-
-
-
-
-    // ===========================================================================================
-    function timeUpdate() {
-        let petArray = [];
-        $.get("/api/pets/", function (dbData) {
-            let petA = [];
-            for (let i in dbData) {
-                let momDifFed = parseFloat(moment().diff(dbData[i].lastFed, 'minutes', true));
-                let momDifSlept = parseFloat(moment().diff(dbData[i].lastSlept, 'minutes', true));
-                let momDifPlayed = parseFloat(moment().diff(dbData[i].lastPlayed, 'minutes', true));
-                // =================================================================================
-                //if 10 minutes have passed, subtract 5 from hungry
-                if (momDifFed >= 10) {
-                    //update [dbData[i]].hungry
-                    dbData[i].hungry -= 5;
-                    dbData[i].lastFed = moment().format()
-                }
-                //if 8 minutes have passed, subtract 4 from hungry/sleepy/play
-                //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
-                else if (momDifFed >= 8) {
-                    dbData[i].hungry -= 4;
-                    dbData[i].lastFed = moment().subtract(momDifFed - 8, 'minutes').format()
-                }
-                else if (momDifFed >= 6) {
-                    dbData[i].hungry -= 3;
-                    dbData[i].lastFed = moment().subtract(momDifFed - 6, 'minutes').format()
-                }
-                else if (momDifFed >= 4) {
-                    dbData[i].hungry -= 2;
-                    dbData[i].lastFed = moment().subtract(momDifFed - 4, 'minutes').format()
-                }
-                else if (momDifFed >= 2) {
-                    dbData[i].hungry -= 1;
-                    dbData[i].lastFed = moment().subtract(momDifFed - 2, 'minutes').format()
-                };
-                // =================================================================================
-                //if 10 minutes have passed, subtract 5 from sleepy
-                if (momDifSlept >= 10) {
-                    //update [dbData[i]].hungry
-                    dbData[i].sleepy -= 5;
-                }
-                //if 8 minutes have passed, subtract 4 from hungry/sleepy/play
-                //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
-                else if (momDifSlept >= 8) {
-                    dbData[i].sleepy -= 4;
-                    dbData[i].lastSlept = moment().subtract(momDifSlept - 8, 'minutes').format()
-                }
-                else if (momDifSlept >= 6) {
-                    dbData[i].sleepy -= 3;
-                    dbData[i].lastSlept = moment().subtract(momDifSlept - 6, 'minutes').format()
-                }
-                else if (momDifSlept >= 4) {
-                    dbData[i].sleepy -= 2;
-                    dbData[i].lastSlept = moment().subtract(momDifSlept - 4, 'minutes').format()
-                }
-                else if (momDifSlept >= 2) {
-                    dbData[i].sleepy -= 1;
-                    dbData[i].lastSlept = moment().subtract(momDifSlept - 2, 'minutes').format()
-                };
-                // =================================================================================
-                //if 10 minutes have passed, subtract 5 from happy
-                if (momDifPlayed >= 10) {
-                    //update [dbData[i]].hungry
-                    dbData[i].happy -= 5;
-                }
-                //if 8 minutes have passed, subtract 4 from hungry/sleepy/play
-                //update lastFed/Slept/Played to reflect [dbData[i]].hungry decreases happened 
-                else if (momDifPlayed >= 8) {
-                    dbData[i].happy -= 4;
-                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 8, 'minutes').format()
-                }
-                else if (momDifPlayed >= 6) {
-                    dbData[i].happy -= 3;
-                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 6, 'minutes').format()
-                }
-                else if (momDifPlayed >= 4) {
-                    dbData[i].happy -= 2;
-                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 4, 'minutes').format()
-                }
-                else if (momDifPlayed >= 2) {
-                    dbData[i].happy -= 1;
-                    dbData[i].lastPlayed = moment().subtract(momDifPlayed - 2, 'minutes').format()
-                };
-                // =================================================================================
-                //set statuses to zero if below zero
-                if (dbData[i].hungry < 0) {
-                    dbData[i].hungry = 0;
-                    dbData[i].lastFed = moment().subtract(4, 'minutes').format();
-                    console.log("LAst played up: ", dbData[i].lastFed)
-                }
-                if (dbData[i].sleepy <= 0) {
-                    dbData[i].sleepy = 0;
-                    dbData[i].lastPlayed = moment().subtract(2, 'minutes').format();
-                    console.log("LAst played up: ", dbData[i].lastPlayed);
-                    console.log("This moment minus 2: ", moment().subtract(5, 'minutes').format())
-                }
-                if (dbData[i].happy < 0) {
-                    dbData[i].happy = 0;
-                }
-                if (dbData[i].hungry === 0 && dbData[i].sleepy === 0 && dbData[i].happy === 0) {
-                    dbData[i].hp = 0;
-                    dbData[i].alive = 0
-                }
-                else if (dbData[i].hungry === 0 && dbData[i].sleepy === 0 || dbData[i].sleepy === 0 && dbData[i].happy === 0 || dbData[i].hungry === 0 && dbData[i].happy === 0) {
-                    dbData[i].hp = 1
-                }
-                else if (dbData[i].hungry === 0 || dbData[i].sleepy === 0 || dbData[i].happy === 0) {
-                    dbData[i].hp = 2
-                }
-                else {
-                    dbData[i].hp = 3;
-                }
-
-                petA.push(dbData[i])
-
-
-            };
-            petArray = petA
-        }).then(function (result) {
-            let petObj = {
-                pets: petArray
-            }
-            updateStatus(petObj);
-        })
-    };
-    // ===========================================================================================
-    function updateStatus(Obj) {
-        $.ajax({
-            url: "/api/p/",
-            type: 'PUT',
-            data: Obj,
-        }).then(function (result) {
-            console.log("changes made!");
-            //update the info
-            // location.reload()
-        })
-    };
-
-
-
-
     const messageGenerator = {
         // a function that generate the message of status in the info modal
         statusMessage: function (alive, hp, hungry, sleepy, happy) {
