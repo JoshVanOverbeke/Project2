@@ -13,9 +13,10 @@
             <div class="justify-content-end collapse navbar-collapse" id="navbarTogglerDemo01">
                 <div class="pr-4">
                     <button class="btn btn-danger my-2 my-sm-0 mx-2" id="createPet">Create A Pet</button>
-                    <button class="btn btn-warning my-2 my-sm-0 mx-2" data-toggle="modal" data-target="#loginModal">Log
+                    <button class="btn btn-warning my-2 my-sm-0 mx-2" data-toggle="modal" data-target="#loginModal"  style="display: inline" id="loginModalBtn">Log
                         In</button>
-                    <button class="btn btn-warning my-2 my-sm-0 mx-2" data-toggle="modal" data-target="#signupModal">Sign Up</button>
+                    <button class="btn btn-warning my-2 my-sm-0 mx-2" data-toggle="modal" data-target="#signupModal" style="display: inline" id="signinModalBtn">Sign Up</button>
+                    <button class="btn btn-warning my-2 my-sm-0 mx-2" id="logoutBtn">Log Out</button>
                 </div>
             </div>
         </nav>
@@ -50,7 +51,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content p-2">
             <div class="modal-header">
-                <h3 class="petInfo-title" id="exampleModalCenterTitle"><b>Bearer</b> | Owner: Jack</h3>
+                <h3 class="modal-title petInfo-title" id="exampleModalCenterTitle"><b>Bearer</b> | Owner: Jack</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
