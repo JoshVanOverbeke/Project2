@@ -73,21 +73,7 @@ const { JWT_OPTIONS, JWT_SECRET_KEY, TEST_USER } = require('../config/jwt')
                 
                 return res.json(500,err)
             })
-
-
     });
-
-    router.delete("/api/users/:id", function (req, res) {
-        db.User.destroy({
-            where: {
-                id: req.params.id
-            }
-        }).then(function (dbUser) {
-            res.json(dbUser);
-        });
-    });
-
-// };
 
 //export router
 module.exports = router

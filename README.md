@@ -7,7 +7,7 @@ This application doesn't require any other installation for a user.
 
 ### Initial Configuration
 
-Before starting development of this application, we needed to npm install express-jwt, express, moment, express-handlebars, mysqul2, and sequelize packages. We created the database on jawsDB and deployed to Heroku.
+Before starting development of this application, we needed to npm install jsonwebtoken, express-jwt, express, moment, express-handlebars, mysql2, and sequelize packages. We created the database on jawsDB and deployed to Heroku.
 
 
 ## Running the tests
@@ -21,10 +21,12 @@ Code snippet goes here.  What folder, file, and line numbers.
 ## Built With
 * jquery
 * Bootstrap
+* MySql
 * express-handlebars
 * express
 * moment
 * sequelize
+* Json Web Token (JWT)
 * express-jwt
 
 ## Links
