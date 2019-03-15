@@ -1,7 +1,8 @@
 $(document).ready(function () {
-    //clickhandlers for pets
+    //=============================================gloabal variables=============================================
+    //Img src variavle
     var selectedPetSrc = ""
-
+    //Messages for modal
     var messages = {
         goodStatus: [
             "Anything fun to do today? :) ",
@@ -32,23 +33,29 @@ $(document).ready(function () {
         die: "You didn't love me, so I am dead. QAQ"
     }
 
-    function reloadUpdate() {
-        $.ajax({
-            url: "/api/p/",
-            type: 'PUT',
-        }).then(function (result) {
-            console.log("changes made!");
-            location.reload()
-        })
-    };
-    reloadUpdate()
 
 
-    //{
-    //     user: userDetails,
-    //     token: token,
-    // }
-    //clickhandlers for log in button model
+
+    //=============================================Clickhandlers=============================================
+    ////////////Log In & Sign Up & Log Outt=======================================
+
+    // clickhandler for showing the log-in modal
+    $("#loginModalBtn").on("click", function () {
+        //show the modal
+        $("#loginModal").modal("show")
+        // stop the auto reload
+        clearInterval(reloadUpdate)
+    })
+
+    // clickhandler for showing the sign-up modal
+    $("#signinModalBtn").on("click", function () {
+        //show the modal
+        $("#signupModal").modal("show")
+        // stop the auto reload
+        clearInterval(reloadUpdate)
+    })
+
+    //clickhandler for log-in btn
     $("#loginBtn").on("click", function (e) {
         e.preventDefault()
         let name = $.trim($("#lg_username").val())
@@ -58,36 +65,44 @@ $(document).ready(function () {
             name: name,
             password: password
         }
-        // token POST request
-        $.ajax({
-            url: "/token",
-            data: reqestbody,
-            method: "POST"
-        })
-            .then(function (response) {
-                console.log("Got Data:", response);
-                // call the function to attach token in ajex request
-                attachToken(response.token);
-                // close the modal;
-                // $('#loginBtn').modal('toggle')
-                alert("Welcome, " + name + "!")
-                //erro shooting
+        if (name === "" || password === "") {
+            alert("Please enter a valid username and password!")
+        } else {
+            // token POST request
+            $.ajax({
+                url: "/token",
+                data: reqestbody,
+                method: "POST"
+            }).then(function (response) {
+                if (response === "noUser") {
+                    // warning alerts for user does not exist
+                    alert("User does not exist. Please sign up first!")
 
+                } else if (response === "passwordWrong") {
+                    // warning alerts for password wrong
+                    alert("The username or password you entered is incorrect. Please try again or sign up!")
 
-
-
-
-                $("#logoutBtn").css("display", "inline")
-                $("#loginModalBtn").attr("style", "display:none!important")
-                $("#signinModalBtn").attr("style", "display:none!important")
-                $('#loginModal').modal('toggle')
+                } else {
+                    // pass the validation!
+                    console.log("Got Data:", response);
+                    // call the function to attach token in ajex request
+                    attachToken(response.token);
+                    // alert user welcome
+                    alert("Welcome, " + response.user.name + "!")
+                    // call the checktoken function and close the modal
+                    checkToken()
+                    $('#loginModal').modal('toggle')
+                    //reload the page to start the auto reload
+                    location.reload()
+                }
             })
+
+        }
     })
 
-    //clickhandlers for sign up button model
+    //clickhandlers for sign up btn
     $("#signupBtn").on("click", function (e) {
         e.preventDefault()
-
         let name = $.trim($("#su_username").val())
         console.log("username is :" + name)
         let password = $("#su_password").val()
@@ -129,59 +144,38 @@ $(document).ready(function () {
                                 attachToken(response.token);
                                 // testTokenAttached();
                                 alert("Welcome, " + response.user.name + "!")
+                                // call the checktoken function
+                                checkToken()
+                                $('#signupModal').modal('toggle')
+                                //reload the page to start the auto reload
+                                location.reload()
                             })
                     })
-                    $('#signupModal').modal('toggle')
+
+
                     // if exists
                 } else {
                     alert("User already exists! Please use another name!")
                 }
             })
         }
-        // let name = $.trim($("#lg_username").val())
-        // let password = $("#lg_password").val()
-        // // input validation
-        // if (name === "" || password === "") {
-        //     alert("Please enter a valid username and password!")
-        // } else {
-        //     // check if user already exists
-        //     $.ajax({
-        //         url: "/api/user/" + name,
-        //         type: 'GET',
-        //         // data: reqestbody,
-        //     }).then(function (data) {
-        //         console.log(data)
-        //         // if did not exist
-        //         if (data === null) {
-        //             alert("User does not exist. Please sign up first")
-        //             // if exists
-        //         } else {
-        //             //check the password (authentication)
-        //             if (password !== data.password) {
-        //                 //not match
-        //                 alert("The username or password you entered is incorrect. Please try again or sign up!")
-        //             } else {
-        //                 //match 
-        //                 alert("Welcome, " + name + "!")
-        //                 $('#loginModal').modal('toggle')
-        //             }
-        //         }
-        //     })
-
-        // }
     })
 
     // clickhandler for sign out btn
-
-    $("#logoutBtn").on("click",function(e){
+    $("#logoutBtn").on("click", function (e) {
         localStorage.removeItem("token")
-        $("#logoutBtn").css("display", "none")
-        $("#loginModalBtn").attr("style", "display:inline!important")
-        $("#signinModalBtn").attr("style", "display:inline!important")
+        // call the checktoken function
+        checkToken()
         attachToken()
     })
 
+    ////////////==================================================
 
+
+
+
+
+    ////////////create pet========================================
     //clickhandler for showing the create pet modal
     $("#createPet").on("click", function (e) {
         e.preventDefault()
@@ -189,9 +183,8 @@ $(document).ready(function () {
         creatNewPetList()
         // show the modal
         $('#createPetModal').modal('show')
-
-
-
+        // stop the autoreload
+        clearInterval(reloadUpdate)
     })
 
     //clickhandler for select a pet
@@ -215,29 +208,158 @@ $(document).ready(function () {
             name: name,
             img: img,
         }
-        if (img == ""){
-            console.log("Need to select a pet")
-            $("#errorSelectPet").html("Please select a pet!")
+        if (localStorage.getItem("token") === null) {
+            $("#errorSelectPet").html("<div>Please <a href='' data-toggle='modal' data-target='#signupModal'>sign up</a> or <a href='' data-toggle='modal' data-target='#loginModal'>log in</a> first!</div>")
+        } else {
+            if (img == "") {
+                console.log("Need to select a pet")
+                $("#errorSelectPet").html("Please select a pet!")
+            }
+            else if (name == "") {
+                console.log("Need to select a name")
+                $("#errorSelectPet").html("Please name your pet!")
+            }
+            // hit the POST request path
+            else {
+                $.ajax({
+                    url: "/api/newpet",
+                    type: 'POST',
+                    data: requestBody,
+                }).then(function (result) {
+                    console.log("New Pet has been created")
+                    location.reload()
+                })
+            }
         }
-        else if (name == ""){
-            console.log("Need to select a name")
-            $("#errorSelectPet").html("Please name your pet!")
+    })
+    ////////////===================================================
+
+
+
+
+
+
+    ////////////show info=================================================
+    //clickhandlers for pets in the park for showing info
+    $("article").on("click", function (e) {
+        e.preventDefault();
+        console.log("click")
+        // get the id from article data-id
+        var id = $(this).data("id");
+        console.log("Show the info of pet id: " + id)
+        // update the progress bar
+        showPetInfo(id);
+        // update the message:
+        messageGenerator.showStatusMessage(id);
+    })
+    ////////////===========================================================
+
+
+
+
+    ////////////actions====================================================
+    //clickhandlers for actions
+    $(".action").on("click", function (e) {
+        e.preventDefault()
+        let id = $(this).data("id");
+        let action = $(this).text()
+        console.log("Do " + action + " to the pet id " + id)
+        let requestBody = {
+            action: action
         }
-        // hit the POST request path
-        else {
+        console.log("PUT requst.body is")
+        console.log(requestBody)
+        // PUT: change specific data of specific pet
         $.ajax({
-            url: "/api/newpet",
-            type: 'POST',
+            url: "/api/pets/" + id,
+            type: 'PUT',
             data: requestBody,
         }).then(function (result) {
-            console.log("New Pet has been created")
-            location.reload()
-            attachToken();
+            console.log("changes made!");
+            if (action === "Kill") {
+                location.reload()
+            } else {
+                // update the progress bar
+                showPetInfo(id);
+                // update the message:
+                messageGenerator.showActionMessage(action);
+            }
         })
-    }
-})
+
+    })
+
+    // click handler for resurrecting the pet
+    $("#resurrectBtn").on("click", function (e) {
+        e.preventDefault()
+        console.log("click")
+        // hide the modal
+        $('#petStatus').modal('hide')
+        var id = $(this).data("id")
+        // show the thunder
+        let thunderImg = `<div><img src="/assets/img/thunder.gif" id="thunder"  style="width:80%"></div>`
+        $(".grave[data-id=" + id + "]").append(thunderImg)
+        //remove the thunder and reload the dom to show the resurrected pet
+        setTimeout(function () {
+            $('#thunder').remove()
+            // a PUT request to change the pet back to alive
+            let requestBody = {
+                action: "Resurrect"
+            }
+            console.log(requestBody)
+            // PUT: change specific data of specific pet
+            $.ajax({
+                url: "/api/pets/" + id,
+                type: 'PUT',
+                data: requestBody,
+            }).then(function (result) {
+                console.log("The pet is resurrected!");
+                location.reload()
+            })
+        }, 1200)
+    })
+
+    // clickhandler for hard kill the pet
+    $("#hardKillBtn").on("click", function (e) {
+        e.preventDefault()
+        if (localStorage.getItem("token") === null) {
+            alert("You need to log in to hard kill a pet!")
+        } else {
+            var id = $(this).data("id")
+            // DELETE: remove a pet from the database
+            $.ajax({
+                url: "/api/pet/" + id,
+                type: 'DELETE',
+            }).then(function (result) {
+                if (result === "notOwner") {
+                    alert("Sorry, you're not the owner!")
+                } else {
+                    // hide the modal
+                    $('#petStatus').modal('hide')
+                    // show the boom and remove it and reload
+                    let boomImg = `<div><img src="/assets/img/boom.png" id="boom"></div>`
+                    $(".grave[data-id=" + id + "]").append(boomImg)
+                    setTimeout(function () {
+                        $('#boom').remove()
+                        location.reload()
+                    }, 800)
+                }
+            })
+        }
+    })
+    ////////////===========================================================
 
 
+
+
+
+
+
+
+
+    //=============================================Functions=============================================
+
+
+    ////////////prepare for create pet===========================================
     // a function that displays pet options
     const creatNewPetList = function () {
         // run the src of gifs in a for loop
@@ -248,25 +370,18 @@ $(document).ready(function () {
             $(".cards-createNewPet").append(articleDiv)
         }
     }
-
-    //clickhandlers for pets in the park for showing info
-    $("article").on("click", function (e) {
-        e.preventDefault();
-            console.log("click")
-            // get the id from article data-id
-            var id = $(this).data("id");
-            console.log("Show the info of pet id: " + id)
-            // update the progress bar
-            showPetInfo(id);
-            // update the message:
-            messageGenerator.showStatusMessage(id);
-    })
+    ////////////================================================================
 
 
+
+    ////////////prepare for show info===========================================
     // function to show/update info of specific pet
-    const showPetInfo = function (id) {
+    const showPetInfo = function (id, cb) {
         // GET: specific pet info
-        $.get("/api/pet/" + id, function (data) {
+        $.ajax({
+            url: "/api/pet/" + id,
+            method: "GET"
+        }).then(function (data) {
             // convert into percentage
             var name = data.name
             var username = data.User.name
@@ -295,83 +410,20 @@ $(document).ready(function () {
                 $("#playBtn").attr("data-id", id)
 
             } else {
-                //if it is not alive
+                //if it is not alive show the resurrect and hard kill btns
                 $("#aliveInfo").css("display", "none")
                 $("#resurrectInfo").css("display", "block")
                 //change the data id of the resurrect button
                 console.log("The resurrect btn id is " + id)
                 $("#resurrectBtn").attr("data-id", id)
+                $("#hardKillBtn").attr("data-id", id)
             }
-
-            // show the modal
+            // show the pet info modal
             $('#petStatus').modal('show')
-
         })
     }
 
-    //click handlebars for actions
-    $(".action").on("click", function (e) {
-        e.preventDefault()
-        let id = $(this).data("id");
-        let action = $(this).text()
-        console.log("Do " + action + " to the pet id " + id)
-        let requestBody = {
-            action: action
-        }
-        console.log("PUT requst.body is")
-        console.log(requestBody)
-        // PUT: change specific data of specific pet
-        $.ajax({
-            url: "/api/pets/" + id,
-            type: 'PUT',
-            data: requestBody,
-        }).then(function (result) {
-            console.log("changes made!");
-            if (action === "Kill") {
-                location.reload()
-                attachToken();
-            } else {
-                // update the progress bar
-                showPetInfo(id);
-                // update the message:
-                messageGenerator.showActionMessage(action);
-            }
-        })
-
-    })
-
-    // a functionn to resurrect the pet
-    $("#resurrectBtn").on("click", function (e) {
-        e.preventDefault()
-        console.log("click")
-        // hide the modal
-        $('#petStatus').modal('hide')
-        var id = $(this).data("id")
-        console.log("The grave id is " + id)
-        let thunderImg = `
-        <div><img src="/assets/img/thunder.gif" id="thunder"  style="width:80%"></div>
-        `
-        $(".grave[data-id=" + id + "]").append(thunderImg)
-
-        setTimeout(function () {
-            $('#thunder').remove()
-            // a PUT request to change the pet back to alive
-            let requestBody = {
-                action: "Resurrect"
-            }
-            console.log(requestBody)
-            // PUT: change specific data of specific pet
-            $.ajax({
-                url: "/api/pets/" + id,
-                type: 'PUT',
-                data: requestBody,
-            }).then(function (result) {
-                console.log("The pet is resurrected!");
-                location.reload()
-                attachToken();
-            })
-        }, 1200)
-    })
+    // functions to manage messages in the modal
     const messageGenerator = {
         // a function that generate the message of status in the info modal
         statusMessage: function (alive, hp, hungry, sleepy, happy) {
@@ -456,12 +508,30 @@ $(document).ready(function () {
 
     }
 
+
+    //////////// reload page & database================================================================
+    // a function to update databse everytime one reloads the page
+    function reloadUpdate() {
+        $.ajax({
+            url: "/api/p/",
+            type: 'PUT',
+        }).then(function (result) {
+            console.log("changes made!");
+            location.reload()
+            console.log("page reload")
+        })
+    };
+
+    // reload the page every 1 minutes
+    setInterval(reloadUpdate, 60000)
+    ////////////=======================================================================================
+
 })
 
 
 
-// IF you "attach" the token to every request, 
-// then you don't have to set the Authorization header every time you make a request
+//////////// Authentication========================================================================
+// a token attached every time make a request
 function attachToken(token) {
     if (token) {
         // save the token in localstorage
@@ -475,5 +545,35 @@ function attachToken(token) {
         }
     });
 }
+////////////=======================================================================================
 
+
+
+
+//////////// manage btns on the page================================================================
+// a function that check if there is a token in localstorage
+// if is display log-out btn
+// if not display log-in and sign-up btns
+function checkToken() {
+    console.log(localStorage.getItem("token"))
+    if (localStorage.getItem("token") === null) {
+        $("#logoutBtn").css("display", "none")
+        $("#loginModalBtn").attr("style", "display:inline!important")
+        $("#signinModalBtn").attr("style", "display:inline!important")
+    } else {
+        $("#logoutBtn").css("display", "inline")
+        $("#loginModalBtn").attr("style", "display:none!important")
+        $("#signinModalBtn").attr("style", "display:none!important")
+    }
+}
+////////////=======================================================================================
+
+
+
+
+//=============================================Calling some functions=============================================
+// call the checktoken/ attachToken/ update Database function everytime the page reloads
+checkToken()
 attachToken()
+console.log("page reload!")
+

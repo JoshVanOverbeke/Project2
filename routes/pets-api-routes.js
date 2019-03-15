@@ -217,7 +217,7 @@ var moment = require("moment");
         };
     });
    
-    // update the columns depending on what was sent
+    //update the columns depending on what was sent
     router.put("/api/pets/:id", function(req, res){
         
         var action = req.body.action;
