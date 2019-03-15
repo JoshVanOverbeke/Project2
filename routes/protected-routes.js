@@ -24,6 +24,30 @@ router.post("/api/newpet", function (req, res) {
         });
 });
 
+// delete a pet
+router.delete("/api/pet/:id", function (req, res) {
+    db.Pet.findOne({
+        where: {
+            id: req.params.id
+        }
+    }).then(function (data) {
+            let userId = data.UserId
+            if (userId === req.user.id) {
+                db.Pet.destroy({
+                    where: {
+                        id: req.params.id
+                    }
+                }).then(function (result) {
+                    res.json(result)
+                })
+            } else {
+                res.json("notOwner")
+            }
+        })
+
+
+})
+
 
 
 //export router

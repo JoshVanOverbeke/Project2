@@ -115,6 +115,11 @@ button{
     top: -100px
 }
 
+#boom{
+    position: absolute;
+    top: -100px
+}
+
 #logoutBtn{
     display: none;
 }
