@@ -7,35 +7,34 @@ var moment = require("moment");
 
 
 // module.exports = function(app) {
-    //get all pets
-    //get a specific pet info
-    router.get("/api/pets/", function(req,res){
-        db.Pet.findAll({
-            include: [{model: db.User}],
-        })
-        .then (function (dbPets){
+//get all pets
+//get a specific pet info
+router.get("/api/pets/", function (req, res) {
+    db.Pet.findAll({
+        include: [{ model: db.User }],
+    })
+        .then(function (dbPets) {
             res.json(dbPets);
         });
-    });
-    router.get("/api/pet/:id", function(req,res){
-        db.Pet.findOne({
-            include: [{model: db.User}],
-            where:{
-                id: req.params.id
-            }
-        })
-        .then (function (dbPets){
+});
+router.get("/api/pet/:id", function (req, res) {
+    db.Pet.findOne({
+        include: [{ model: db.User }],
+        where: {
+            id: req.params.id
+        }
+    }).then(function (dbPets) {
             res.json(dbPets);
         });
-    });
-    //udpates the pet information based on time
-    router.put("/api/p/", function(req, res){
-        db.Pet.findAll({})
-        .then(function(foundPets) {
+});
+//udpates the pet information based on time
+router.put("/api/p/", function (req, res) {
+    db.Pet.findAll({})
+        .then(function (foundPets) {
             return timeUpdate(foundPets)
         })
-        .then(function(results) {
-            for(let j in results){
+        .then(function (results) {
+            for (let j in results) {
                 db.Pet.update({
                     alive: results[j].alive,
                     hp: results[j].hp,
@@ -46,18 +45,19 @@ var moment = require("moment");
                     lastSlept: results[j].lastSlept,
                     lastPlayed: results[j].lastPlayed
                 },
-                {
-                    where: {
-                        id: results[j].id
-                    }
-                })
+                    {
+                        where: {
+                            id: results[j].id
+                        }
+                    })
             }
             console.log("results: ", results)
-        }).then (function (result){
+        }).then(function (result) {
             console.log("finished");
-            res.json(result)
+            res.send(result)
         });
-         //function that updates the pet information based off time
+
+    //function that updates the pet information based off time
     function timeUpdate(dbData) {
         let petArray = [];
         for (let i in dbData) {
@@ -161,35 +161,35 @@ var moment = require("moment");
             else {
                 dbData[i].dataValues.hp = 3;
             }
-        petArray.push(dbData[i].dataValues)
-    
+            petArray.push(dbData[i].dataValues)
+
         }
         console.log("Ran timeupdate")
         return petArray
     };
-    });
-   
-    // update the columns depending on what was sent
-    router.put("/api/pets/:id", function(req, res){
-        
-        var action = req.body.action;
-        console.log(action)
-        var actionKey;
-        switch (action){
+});
+
+// update the columns depending on what was sent
+router.put("/api/pets/:id", function (req, res) {
+
+    var action = req.body.action;
+    console.log(action)
+    var actionKey;
+    switch (action) {
         // if Feed is sent then update hungry and lastFed to the current time
         case "Feed":
-        // increment hungry by one
+            // increment hungry by one
             db.Pet.findOne(
                 {
                     where: {
-                        id:req.params.id
+                        id: req.params.id
                     }
                 })
-                .then(function(foundPet) {
-                return foundPet.update({hungry: parseInt(foundPet.hungry)+1})
+                .then(function (foundPet) {
+                    return foundPet.update({ hungry: parseInt(foundPet.hungry) + 1 })
                 })
-                .then(function(result) {
-                console.log("results: ", result)
+                .then(function (result) {
+                    console.log("results: ", result)
                 });
             // update the lastFed time
             db.Pet.update({
@@ -201,41 +201,41 @@ var moment = require("moment");
                         id: req.params.id
                     }
                 })
-                .then (function (result){
+                .then(function (result) {
                     res.end()
                 });
-        // if hungry is at zero then increase hp by one
-            if (req.body.hungry=0){
+            // if hungry is at zero then increase hp by one
+            if (req.body.hungry = 0) {
                 db.Pet.findOne(
                     {
                         where: {
-                            id:req.params.id
+                            id: req.params.id
                         }
                     })
-                    .then(function(foundPet) {
-                    return foundPet.update({hp: parseInt(foundPet.hp)+1})
+                    .then(function (foundPet) {
+                        return foundPet.update({ hp: parseInt(foundPet.hp) + 1 })
                     })
-                    .then(function(result) {
-                    console.log("results: ", result)
+                    .then(function (result) {
+                        console.log("results: ", result)
                     });
             }
             break;
-        
+
         // if Play is sent then update happy and lastPlayed to the current time
-        case "Play": 
+        case "Play":
             console.log("run play!!!")
             // increment happy by one
             db.Pet.findOne(
                 {
                     where: {
-                        id:req.params.id
+                        id: req.params.id
                     }
                 })
-                .then(function(foundPet) {
-                return foundPet.update({happy: parseInt(foundPet.happy)+1})
+                .then(function (foundPet) {
+                    return foundPet.update({ happy: parseInt(foundPet.happy) + 1 })
                 })
-                .then(function(result) {
-                console.log("results: ", result)
+                .then(function (result) {
+                    console.log("results: ", result)
                 });
             // update the lastPlayed time
             db.Pet.update({
@@ -246,42 +246,42 @@ var moment = require("moment");
                         id: req.params.id
                     }
                 })
-                .then (function (result){
+                .then(function (result) {
                     res.end()
-                }); 
+                });
             // update hp if happy is 0
-                if (req.body.happy=0){
-                    db.Pet.findOne(
-                        {
-                            where: {
-                                id:req.params.id
-                            }
-                        })
-                        .then(function(foundPet) {
-                        return foundPet.update({hp: parseInt(foundPet.hp)+1})
-                        })
-                        .then(function(result) {
+            if (req.body.happy = 0) {
+                db.Pet.findOne(
+                    {
+                        where: {
+                            id: req.params.id
+                        }
+                    })
+                    .then(function (foundPet) {
+                        return foundPet.update({ hp: parseInt(foundPet.hp) + 1 })
+                    })
+                    .then(function (result) {
                         console.log("results: ", result)
-                        });
-                }
+                    });
+            }
 
-            break;  
-        
+            break;
+
         // if Sleep is sent then update sleepy and lastSlept to the current time
-        case "Sleep": 
+        case "Sleep":
             console.log("run sleep!!!")
             // increment Sleepy by one
             db.Pet.findOne(
                 {
                     where: {
-                        id:req.params.id
+                        id: req.params.id
                     }
                 })
-                .then(function(foundPet) {
-                return foundPet.update({sleepy: parseInt(foundPet.sleepy)+1})
+                .then(function (foundPet) {
+                    return foundPet.update({ sleepy: parseInt(foundPet.sleepy) + 1 })
                 })
-                .then(function(result) {
-                console.log("results: ", result)
+                .then(function (result) {
+                    console.log("results: ", result)
                 });
             // update the lastSlept time
             db.Pet.update({
@@ -292,30 +292,30 @@ var moment = require("moment");
                         id: req.params.id
                     }
                 })
-                .then (function (result){
-                    res.end()                
-                });  
+                .then(function (result) {
+                    res.end()
+                });
 
             // increment hp if sleepy is 0
-                if (req.body.sleepy=0){
-                    db.Pet.findOne(
-                        {
-                            where: {
-                                id:req.params.id
-                            }
-                        })
-                        .then(function(foundPet) {
-                        return foundPet.update({hp: parseInt(foundPet.hp)+1})
-                        })
-                        .then(function(result) {
+            if (req.body.sleepy = 0) {
+                db.Pet.findOne(
+                    {
+                        where: {
+                            id: req.params.id
+                        }
+                    })
+                    .then(function (foundPet) {
+                        return foundPet.update({ hp: parseInt(foundPet.hp) + 1 })
+                    })
+                    .then(function (result) {
                         console.log("results: ", result)
-                        });
-                }
-                
-            break; 
-       
+                    });
+            }
+
+            break;
+
         // if Kill is sent then update all status to 0
-        case "Kill": 
+        case "Kill":
             console.log("run kill!!!")
             db.Pet.update({
                 alive: 0,
@@ -329,12 +329,12 @@ var moment = require("moment");
                         id: req.params.id
                     }
                 })
-                .then (function (result){
-                    res.end()                
+                .then(function (result) {
+                    res.end()
                 });
             break;
 
-        case "Resurrect": 
+        case "Resurrect":
             console.log("==========================run resurrect!!!=========================")
             db.Pet.update({
                 alive: 1,
@@ -351,13 +351,13 @@ var moment = require("moment");
                         id: req.params.id
                     }
                 })
-                .then (function (result){
-                    res.end()                
+                .then(function (result) {
+                    res.end()
                 });
             break;
     }
-    
-    });
+
+});
 // };
 
 //export router
