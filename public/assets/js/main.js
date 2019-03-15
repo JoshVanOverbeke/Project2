@@ -35,7 +35,7 @@ $(document).ready(function () {
 
 
 
-    
+
     //=============================================Clickhandlers=============================================
     ////////////Log In & Sign Up & Log Outt=======================================
 
@@ -321,29 +321,30 @@ $(document).ready(function () {
     // clickhandler for hard kill the pet
     $("#hardKillBtn").on("click", function (e) {
         e.preventDefault()
-        // delete request
-        console.log("click")
-        // hide the modal
-        var id = $(this).data("id")
-        // DELETE: remove a pet from the database
-        $.ajax({
-            url: "/api/pet/" + id,
-            type: 'DELETE',
-        }).then(function (result) {
-            if (result === "notOwner") {
-                alert("Sorry, you're not the owner!")
-            } else {
-                // hide the modal
-                $('#petStatus').modal('hide')
-                // show the boom and remove it and reload
-                let boomImg = `<div><img src="/assets/img/boom.png" id="boom"></div>`
-                $(".grave[data-id=" + id + "]").append(boomImg)
-                setTimeout(function () {
-                    $('#boom').remove()
-                    location.reload()
-                }, 800)
-            }
-        })
+        if (localStorage.getItem("token") === null) {
+            alert("You need to log in to hard kill a pet!")
+        } else {
+            var id = $(this).data("id")
+            // DELETE: remove a pet from the database
+            $.ajax({
+                url: "/api/pet/" + id,
+                type: 'DELETE',
+            }).then(function (result) {
+                if (result === "notOwner") {
+                    alert("Sorry, you're not the owner!")
+                } else {
+                    // hide the modal
+                    $('#petStatus').modal('hide')
+                    // show the boom and remove it and reload
+                    let boomImg = `<div><img src="/assets/img/boom.png" id="boom"></div>`
+                    $(".grave[data-id=" + id + "]").append(boomImg)
+                    setTimeout(function () {
+                        $('#boom').remove()
+                        location.reload()
+                    }, 800)
+                }
+            })
+        }
     })
     ////////////===========================================================
 
