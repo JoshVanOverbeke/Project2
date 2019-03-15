@@ -13,8 +13,8 @@
             <div class="justify-content-end collapse navbar-collapse" id="navbarTogglerDemo01">
                 <div class="pr-4">
                     <button class="btn btn-danger my-2 my-sm-0 mx-2" id="createPet">Create A Pet</button>
-                    <button class="btn btn-warning my-2 my-sm-0 mx-2" data-toggle="modal" data-target="#loginModal"  style="display: inline" id="loginModalBtn">Log In</button>
-                    <button class="btn btn-warning my-2 my-sm-0 mx-2" data-toggle="modal" data-target="#signupModal" style="display: inline" id="signinModalBtn">Sign Up</button>
+                    <button class="btn btn-warning my-2 my-sm-0 mx-2" style="display: inline" id="loginModalBtn">Log In</button>
+                    <button class="btn btn-warning my-2 my-sm-0 mx-2" style="display: inline" id="signinModalBtn">Sign Up</button>
                     <button class="btn btn-warning my-2 my-sm-0 mx-2" id="logoutBtn">Log Out</button>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                 {{/if}}
                 {{#unless this.alive}}
                     <article data-id={{this.id}}>
-                        <div class="grave"  data-id={{this.id}}>
+                        <div class="grave" data-id={{this.id}}>
                             <img src="/assets/img/grave.png">
                         </div>
                     </article>
@@ -132,7 +132,8 @@
             </div>
             <div class="modal-body" id="resurrectInfo">
                 <div class="text-center">
-                    <button type="button" class="btn btn-danger btn-lg btn-block my-5" id="resurrectBtn" data-id="#">Resurrect</button>
+                    <button type="button" class="btn btn-warning btn-lg btn-block mt-5 mb-2" id="resurrectBtn" data-id="#">Resurrect</button>
+                     <button type="button" class="btn btn-secondary btn-lg btn-block mb-5" id="hardKillBtn" data-id="#">Hard Kill</button>
                 </div>
             </div>
             <div class="modal-footer" style="display: block">
@@ -168,7 +169,7 @@
                 <div class="row p-2" style="width:100%">
                     <input class="text-center py-2 mb-2" style="width:100%" id="newPetName"
                         placeholder="Give your pet a name!"></input>
-                     <div class="text-center py-1" style="width:100%" id="errorSelectPet">
+                     <div class="text-center py-2" style="width:100%" id="errorSelectPet">
                     </div>
                     <button type="button" class="btn btn-danger btn-lg btn-block" id="createNewPetBtn">Create</button>
                 </div>

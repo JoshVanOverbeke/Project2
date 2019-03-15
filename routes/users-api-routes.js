@@ -41,7 +41,7 @@ const { JWT_OPTIONS, JWT_SECRET_KEY, TEST_USER } = require('../config/jwt')
             }
         })
             .then(function (data) {
-                if (!data) return res.json("User does not exist."); //user wasn't found in the database, send a 404
+                if (!data) return res.json("noUser"); //user wasn't found in the database, send a 404
 
 
 
@@ -66,7 +66,7 @@ const { JWT_OPTIONS, JWT_SECRET_KEY, TEST_USER } = require('../config/jwt')
                         })
                 }
                 else {
-                    res.json("The username or password you entered is incorrect."); //password incorrect, send a 401 [Unauthorized]
+                    res.json("passwordWrong"); //password incorrect, send a 401 [Unauthorized]
                 }
             })
             .catch(function (err) {
