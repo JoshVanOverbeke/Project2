@@ -121,7 +121,6 @@ $(document).ready(function () {
                 type: 'GET',
                 // data: reqestbody,
             }).then(function (data) {
-                console.log(data)
                 // if did not exist
                 if (data === null) {
                     //POST: new user
@@ -139,7 +138,6 @@ $(document).ready(function () {
                             method: "POST"
                         })
                             .then(function (response) {
-                                console.log("Got Data:", response);
                                 // call the function to attach token in ajex request
                                 attachToken(response.token);
                                 // testTokenAttached();
@@ -190,12 +188,10 @@ $(document).ready(function () {
     //clickhandler for select a pet
     $("#createPetModal").on("click", ".selectPetBox", function (e) {
         e.preventDefault()
-        console.log("click!")
         // change the border color and thickness of the selected box
         $(".selectPetBox").removeClass("selectedPetBox")
         $(this).addClass("selectedPetBox");
         selectedPetSrc = $(this).data("img");
-        console.log(selectedPetSrc)
         // get the name of the pet
     })
 
@@ -243,7 +239,6 @@ $(document).ready(function () {
     //clickhandlers for pets in the park for showing info
     $("article").on("click", function (e) {
         e.preventDefault();
-        console.log("click")
         // get the id from article data-id
         var id = $(this).data("id");
         console.log("Show the info of pet id: " + id)
@@ -267,8 +262,6 @@ $(document).ready(function () {
         let requestBody = {
             action: action
         }
-        console.log("PUT requst.body is")
-        console.log(requestBody)
         // PUT: change specific data of specific pet
         $.ajax({
             url: "/api/pets/" + id,
@@ -291,7 +284,6 @@ $(document).ready(function () {
     // click handler for resurrecting the pet
     $("#resurrectBtn").on("click", function (e) {
         e.preventDefault()
-        console.log("click")
         // hide the modal
         $('#petStatus').modal('hide')
         var id = $(this).data("id")
@@ -305,7 +297,6 @@ $(document).ready(function () {
             let requestBody = {
                 action: "Resurrect"
             }
-            console.log(requestBody)
             // PUT: change specific data of specific pet
             $.ajax({
                 url: "/api/pets/" + id,
@@ -414,7 +405,6 @@ $(document).ready(function () {
                 $("#aliveInfo").css("display", "none")
                 $("#resurrectInfo").css("display", "block")
                 //change the data id of the resurrect button
-                console.log("The resurrect btn id is " + id)
                 $("#resurrectBtn").attr("data-id", id)
                 $("#hardKillBtn").attr("data-id", id)
             }
@@ -516,9 +506,7 @@ $(document).ready(function () {
             url: "/api/p/",
             type: 'PUT',
         }).then(function (result) {
-            console.log("changes made!");
             location.reload()
-            console.log("page reload")
         })
     };
 
@@ -555,7 +543,6 @@ function attachToken(token) {
 // if is display log-out btn
 // if not display log-in and sign-up btns
 function checkToken() {
-    console.log(localStorage.getItem("token"))
     if (localStorage.getItem("token") === null) {
         $("#logoutBtn").css("display", "none")
         $("#loginModalBtn").attr("style", "display:inline!important")
