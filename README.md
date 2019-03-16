@@ -36,6 +36,7 @@ We ran tests creating a user and creating a pet.  Made pets with all of our gifs
 ## Code Snippet
 
 * Code Snippet 1
+```
 // increment hungry by one
      db.Pet.findOne(
         {
@@ -49,8 +50,9 @@ We ran tests creating a user and creating a pet.  Made pets with all of our gifs
         .then(function(result) {
         console.log("results: ", result)
         });
-
+```
 * Code Snippet 2
+```
 //////////// manage btns on the page================================================================
 // a function that check if there is a token in localstorage
 // if is display log-out btn
@@ -67,8 +69,9 @@ function checkToken() {
         $("#signinModalBtn").attr("style", "display:none!important")
     }
 }
-
+```
 * Code Snippet 3
+```
 // click handler for resurrecting the pet
     $("#resurrectBtn").on("click", function (e) {
         e.preventDefault()
@@ -126,7 +129,7 @@ function checkToken() {
             })
         }
     })
-
+```
 ## Built With
 * jquery
 * Bootstrap
