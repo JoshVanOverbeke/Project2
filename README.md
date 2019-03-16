@@ -1,4 +1,4 @@
-# Project2
+# Project 2 - Pet Park
 This application is a game to have fun.  If a user comes to the page,they need to register or log in before creating a pet.  The owners can feed, put the cat down for a nap, play with, or kill their pet. Other people can also feed, nap, play, and kill any pets. If a hasn't been fed, played, or napped in a long time the pet will die.  If the pet dies, the owner can resurrect their pet.  The application has been changed back to using hours for the pets health points decreasing if too much time has passed.  
 
 * Sleep bar will decrease every 6 hours
